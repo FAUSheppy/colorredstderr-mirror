@@ -23,9 +23,6 @@
 /* Must be loaded before the following headers. */
 #include "ldpreload.h"
 
-/* FIXME: use correct declaration for fcntl() */
-#define fcntl fcntl_ignore
-
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
@@ -33,7 +30,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#undef fcntl
 /* Conflicting declaration in glibc. */
 #undef fwrite_unlocked
 
@@ -272,13 +268,29 @@ int dup3(int oldfd, int newfd, int flags) {
     return newfd;
 }
 
-static int (*real_fcntl)(int, int, int);
-int fcntl(int fd, int cmd, int arg) {
+static int (*real_fcntl)(int, int, ...);
+int fcntl(int fd, int cmd, ...) {
     int result;
+    va_list ap;
 
     DLSYM_FUNCTION(real_fcntl, "fcntl");
 
-    result = real_fcntl(fd, cmd, arg);
+    /* fcntl() takes different types of arguments depending on the cmd type
+     * (int, void and pointers are used at the moment). Handling these
+     * arguments for different systems and with possible changes in the future
+     * is error prone.
+     *
+     * Therefore always retrieve a void-pointer from our arguments (even if it
+     * wasn't there) and pass it to real_fcntl(). This shouldn't cause any
+     * problems because a void-pointer is most-likely bigger than an int
+     * (something which is not true in reverse) and shouldn't cause
+     * truncation. For register based calling conventions an invalid register
+     * content is passed, but ignored by real_fcntl(). Not perfect, but should
+     * work fine.
+     */
+    va_start(ap, cmd);
+    result = real_fcntl(fd, cmd, va_arg(ap, void *));
+    va_end(ap);
     /* We only care about duping fds. */
     if (cmd == F_DUPFD && result != -1) {
         int saved_errno = errno;
