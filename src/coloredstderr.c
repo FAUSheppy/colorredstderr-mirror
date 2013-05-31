@@ -49,7 +49,7 @@ static size_t (*real_fwrite)(const void *, size_t, size_t, FILE *);
 # include "debug.h"
 #endif
 
-#include "macros.h"
+#include "hookmacros.h"
 #include "trackfds.h"
 
 
