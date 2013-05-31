@@ -280,7 +280,7 @@ int fcntl(int fd, int cmd, int arg) {
 
     result = real_fcntl(fd, cmd, arg);
     /* We only care about duping fds. */
-    if (cmd == F_DUPFD) {
+    if (cmd == F_DUPFD && result != -1) {
         int saved_errno = errno;
         dup_fd(fd, result);
         errno = saved_errno;
