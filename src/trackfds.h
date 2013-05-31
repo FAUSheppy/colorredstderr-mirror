@@ -118,7 +118,8 @@ static void update_environment(void) {
 
 #ifdef DEBUG
 static void tracked_fds_debug(void) {
-    debug("tracked_fds: %d/%d\n", tracked_fds_count, tracked_fds_space);
+    debug("tracked_fds: %d/%d\t[%d]\n", tracked_fds_count, tracked_fds_space,
+                                        getpid());
     size_t i;
     for (i = 0; i < tracked_fds_count; i++) {
         debug("tracked_fds[%d]: %d\n", i, tracked_fds[i]);
