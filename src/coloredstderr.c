@@ -39,6 +39,10 @@ static ssize_t (*real_write)(int, const void *, size_t);
 static int (*real_close)(int);
 static size_t (*real_fwrite)(const void *, size_t, size_t, FILE *);
 
+/* Did we already (try to) parse the environment and setup the necessary
+ * variables? */
+static int initialized;
+
 
 #include "constants.h"
 #ifdef DEBUG
@@ -58,7 +62,7 @@ static int check_handle_fd(int fd) {
     }
 
     /* Load state from environment. Only necessary once per process. */
-    if (!tracked_fds) {
+    if (!initialized) {
         init_from_environment();
     }
 
@@ -73,7 +77,7 @@ static void dup_fd(int oldfd, int newfd) {
     debug("%d -> %d\t\t\t[%d]\n", oldfd, newfd, getpid());
 #endif
 
-    if (!tracked_fds) {
+    if (!initialized) {
         init_from_environment();
     }
     if (tracked_fds_count == 0) {
@@ -101,7 +105,7 @@ static void close_fd(int fd) {
     debug("%d -> .\t\t\t[%d]\n", fd, getpid());
 #endif
 
-    if (!tracked_fds) {
+    if (!initialized) {
         init_from_environment();
     }
 

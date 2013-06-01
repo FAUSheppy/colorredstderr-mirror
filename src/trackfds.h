@@ -34,6 +34,7 @@ static size_t tracked_fds_space;
  * ENV_NAME_FDS has the following format: Each descriptor as string followed
  * by a comma; there's a trailing comma. Example: "2,4,". */
 static void init_from_environment(void) {
+    initialized = 1;
     tracked_fds_count = 0;
 
     const char *env = getenv(ENV_NAME_FDS);
