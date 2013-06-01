@@ -1,0 +1,4 @@
+>stderr>write to stderr: 1
+<stderr<write to stdout
+>stderr>write to stderr 2<stderr<write to stdout 2>stderr>
+<stderr<

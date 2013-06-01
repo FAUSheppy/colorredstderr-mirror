@@ -1,0 +1,8 @@
+>stderr>write to stderr 1
+<stderr<write to stdout 1
+>stderr>write to stdout which gets redirected to stderr
+<stderr<write to stdout 2
+write to stderr which gets redirected to stdout
+write to stdout 3
+>stderr>another redirect to stderr
+<stderr<

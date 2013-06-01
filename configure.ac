@@ -28,6 +28,10 @@ LT_INIT([disable-static])
 
 AC_PROG_CC
 
+dnl Used by test suite.
+AC_PROG_SED
+AC_PROG_EGREP
+
 AC_C_INLINE
 
 AC_CHECK_HEADERS([fcntl.h])
@@ -47,5 +51,5 @@ AC_ARG_ENABLE([debug],
                    AC_DEFINE([DEBUG], 1, [Define to enable debug output.])
                fi])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 AC_OUTPUT

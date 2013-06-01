@@ -18,3 +18,11 @@
 /src/coloredstderr.lo
 /src/libcoloredstderr.la
 /stamp-h1
+/tests/.deps/
+/tests/Makefile
+/tests/Makefile.in
+/tests/example
+/tests/example.o
+/tests/run.sh.log
+/tests/run.sh.trs
+/tests/test-suite.log
