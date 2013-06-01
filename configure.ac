@@ -24,6 +24,7 @@ AC_CONFIG_SRCDIR([src/coloredstderr.c])
 
 AM_PROG_AR
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
+LT_PREREQ([2.4])
 LT_INIT([disable-static])
 
 AC_PROG_CC
