@@ -30,6 +30,8 @@
         DLSYM_FUNCTION(real_ ## name, #name);
 #define _HOOK_PRE_FD(type, name, fd) \
         _HOOK_PRE(type, name) \
+        _HOOK_PRE_FD_ALONE(type, name, fd)
+#define _HOOK_PRE_FD_ALONE(type, name, fd) \
         handle = check_handle_fd(fd); \
         if (handle) { \
             handle_fd_pre(fd, handle); \
@@ -42,12 +44,14 @@
         }
 /* Save and restore the errno to make sure we return the errno of the original
  * function call. */
-#define _HOOK_POST_FD(fd) \
+#define _HOOK_POST_FD_ALONE(fd) \
         if (handle) { \
             int saved_errno = errno; \
             handle_fd_post(fd, handle); \
             errno = saved_errno; \
-        } \
+        }
+#define _HOOK_POST_FD(fd) \
+        _HOOK_POST_FD_ALONE(fd) \
         return result;
 #define _HOOK_POST_FILE(file) \
         if (handle) { \
@@ -57,6 +61,16 @@
         } \
         return result;
 
+
+#define HOOK_VOID1(type, name, fd, type1, arg1) \
+    static type (*real_ ## name)(type1); \
+    type name(type1 arg1) { \
+        int handle; \
+        DLSYM_FUNCTION(real_ ## name, #name); \
+        _HOOK_PRE_FD_ALONE(type, name, fd) \
+        real_ ## name(arg1); \
+        _HOOK_POST_FD_ALONE(fd) \
+    }
 
 #define HOOK_FD3(type, name, fd, type1, arg1, type2, arg2, type3, arg3) \
     static type (*real_ ## name)(type1, type2, type3); \

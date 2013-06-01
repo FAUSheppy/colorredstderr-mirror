@@ -230,6 +230,10 @@ HOOK_FILE1(int, putchar_unlocked, stdout,
 HOOK_FILE1(int, puts_unlocked, stdout,
            const char *, s)
 
+/* perror(3) */
+HOOK_VOID1(void, perror, STDERR_FILENO,
+           const char *, s)
+
 
 /* Hook functions which duplicate file descriptors to track them. */
 

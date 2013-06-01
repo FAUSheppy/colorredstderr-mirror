@@ -28,6 +28,9 @@ int main(int argc, char **argv) {
     printf("write to stdout\n");
     fflush(stdout);
 
+    errno = 0;
+    perror("error!");
+
     write(STDERR_FILENO, "write to stderr 2", 17);
     write(STDOUT_FILENO, "write to stdout 2", 17);
 
