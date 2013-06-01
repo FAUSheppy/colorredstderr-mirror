@@ -34,10 +34,19 @@ static size_t tracked_fds_space;
  * ENV_NAME_FDS has the following format: Each descriptor as string followed
  * by a comma; there's a trailing comma. Example: "2,4,". */
 static void init_from_environment(void) {
+    const char *env;
+
     initialized = 1;
     tracked_fds_count = 0;
 
-    const char *env = getenv(ENV_NAME_FDS);
+    /* If ENV_NAME_FORCE_WRITE is set and not empty, allow writes to a non-tty
+     * device. Use with care! Mainly used for the test suite. */
+    env = getenv(ENV_NAME_FORCE_WRITE);
+    if (env && env[0] != '\0') {
+        force_write_to_non_tty = 1;
+    }
+
+    env = getenv(ENV_NAME_FDS);
     if (!env) {
         return;
     }

@@ -24,6 +24,7 @@
 #define ENV_NAME_FDS "COLORED_STDERR_FDS"
 #define ENV_NAME_PRE_STRING "COLORED_STDERR_PRE"
 #define ENV_NAME_POST_STRING "COLORED_STDERR_POST"
+#define ENV_NAME_FORCE_WRITE "COLORED_STDERR_FORCE_WRITE"
 
 /* Strings written before/after each matched function. */
 #define DEFAULT_PRE_STRING "\e[91m"

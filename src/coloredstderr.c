@@ -42,6 +42,8 @@ static size_t (*real_fwrite)(const void *, size_t, size_t, FILE *);
 /* Did we already (try to) parse the environment and setup the necessary
  * variables? */
 static int initialized;
+/* Force hooked writes even when not writing to a tty. Used for tests. */
+static int force_write_to_non_tty;
 
 
 #include "constants.h"
@@ -56,14 +58,15 @@ static int initialized;
 
 /* Should the "action" handler be invoked for this file descriptor? */
 static int check_handle_fd(int fd) {
-    /* Never touch anything not going to a terminal. */
-    if (!isatty(fd)) {
-        return 0;
-    }
-
     /* Load state from environment. Only necessary once per process. */
     if (!initialized) {
         init_from_environment();
+    }
+
+    /* Never touch anything not going to a terminal - unless we are explicitly
+     * asked to do so. */
+    if (!force_write_to_non_tty && !isatty(fd)) {
+        return 0;
     }
 
     if (tracked_fds_count == 0) {
