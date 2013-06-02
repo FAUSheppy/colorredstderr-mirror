@@ -326,3 +326,21 @@ int fclose(FILE *fp) {
     close_fd(fileno(fp));
     return real_fclose(fp);
 }
+
+
+/* Hook functions which are necessary for correct tracking. */
+
+pid_t vfork(void) {
+    /* vfork() is similar to fork() but the address space is shared between
+     * father and child. It's designed for fork()/exec() usage because it's
+     * faster than fork(). However according to the POSIX standard the "child"
+     * isn't allowed to perform any memory-modifications before the exec()
+     * (except the pid_t result variable of vfork()).
+     *
+     * As some programs don't adhere to the standard (e.g. the "child" closes
+     * or dups a descriptor before the exec()) and this breaks our tracking of
+     * file descriptors (e.g. it gets closed in the parent as well), we just
+     * fork() instead. This is in compliance with the POSIX standard and as
+     * most systems use copy-on-write anyway not a performance issue. */
+    return fork();
+}

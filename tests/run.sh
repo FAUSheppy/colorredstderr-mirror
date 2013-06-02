@@ -33,3 +33,4 @@ force_write=1
 test_script example-simple.sh
 test_script example-redirects.sh
 test_program example
+test_program example_vfork

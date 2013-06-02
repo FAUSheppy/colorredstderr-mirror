@@ -1,0 +1,3 @@
+>stderr>Before vfork().
+<stderr<>stderr>After vfork().
+<stderr<
