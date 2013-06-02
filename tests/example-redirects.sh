@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# Use bash to get consistent test results, /bin/sh can point to multiple
+# shells with different behaviour.
 
 # Copyright (C) 2013  Simon Ruderich
 #
