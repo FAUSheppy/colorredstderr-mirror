@@ -64,8 +64,8 @@ run_test() {
         export COLORED_STDERR_FDS
 
         # Change pre/post strings for simpler testing.
-        COLORED_STDERR_PRE='>stderr>'
-        COLORED_STDERR_POST='<stderr<'
+        COLORED_STDERR_PRE='>STDERR>'
+        COLORED_STDERR_POST='<STDERR<'
         export COLORED_STDERR_PRE
         export COLORED_STDERR_POST
         # And force writes to a file (unless we are testing the force).

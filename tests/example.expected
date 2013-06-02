@@ -1,5 +1,5 @@
->stderr>write to stderr: 1
-<stderr<write to stdout
->stderr>error!: Success
-<stderr<>stderr>write to stderr 2<stderr<write to stdout 2>stderr>
-<stderr<
+>STDERR>write to stderr: 1
+<STDERR<write to stdout
+>STDERR>error!: Success
+<STDERR<>STDERR>write to stderr 2<STDERR<write to stdout 2>STDERR>
+<STDERR<
