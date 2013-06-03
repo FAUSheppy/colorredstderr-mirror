@@ -41,8 +41,6 @@ AC_TYPE_SSIZE_T
 AC_C_INLINE
 
 AC_FUNC_FORK
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
 AC_CHECK_FUNCS([dup2 memmove setenv strdup])
 
 AC_SEARCH_LIBS([dlsym], [dl], [], [AC_MSG_ERROR([dlsym() is required])])
