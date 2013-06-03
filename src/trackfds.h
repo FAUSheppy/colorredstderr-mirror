@@ -105,15 +105,17 @@ static void init_from_environment(void) {
 static void update_environment(void) {
     /* An integer (32-bit) has at most 10 digits, + 1 for the comma after each
      * number. Bigger file descriptors (which shouldn't occur in reality) are
-     * truncated. */
+     * skipped. */
     char env[tracked_fds_count * (10 + 1) * sizeof(char)];
     char *x = env;
 
     size_t i;
     for (i = 0; i < tracked_fds_count; i++) {
         int length = snprintf(x, 10 + 1, "%d", tracked_fds[i]);
-        if (length >= 10 + 1)
-            return;
+        if (length >= 10 + 1) {
+            /* Integer too bit to fit the buffer, skip it. */
+            continue;
+        }
 
         /* Write comma after number. */
         x += length;
