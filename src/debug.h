@@ -33,6 +33,10 @@ static void debug(const char *format, ...) {
     va_start(ap, format);
     int written = vsnprintf(buffer, sizeof(buffer), format, ap);
     va_end(ap);
+    /* Overflow. */
+    if ((size_t)written >= sizeof(buffer)) {
+        written = sizeof(buffer) - 1;
+    }
 
     /* Make sure these functions are loaded. */
     DLSYM_FUNCTION(real_write, "write");
