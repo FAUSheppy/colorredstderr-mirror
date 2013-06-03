@@ -330,6 +330,7 @@ int fclose(FILE *fp) {
 
 /* Hook functions which are necessary for correct tracking. */
 
+#if defined(HAVE_VFORK) && defined(HAVE_FORK)
 pid_t vfork(void) {
     /* vfork() is similar to fork() but the address space is shared between
      * father and child. It's designed for fork()/exec() usage because it's
@@ -344,3 +345,4 @@ pid_t vfork(void) {
      * most systems use copy-on-write anyway not a performance issue. */
     return fork();
 }
+#endif
