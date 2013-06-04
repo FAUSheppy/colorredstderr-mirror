@@ -138,7 +138,7 @@ static void update_environment(void) {
     for (i = 0; i < tracked_fds_count; i++) {
         int length = snprintf(x, 10 + 1, "%d", tracked_fds[i]);
         if (length >= 10 + 1) {
-            /* Integer too bit to fit the buffer, skip it. */
+            /* Integer too big to fit the buffer, skip it. */
             continue;
         }
 

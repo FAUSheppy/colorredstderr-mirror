@@ -206,7 +206,7 @@ HOOK_FILE2(int, vprintf, stdout,
            const char *, format, va_list, ap)
 HOOK_FILE3(int, vfprintf, stream,
            FILE *, stream, const char *, format, va_list, ap)
-/* Hardening functions (-D_FORTIFY_SOURCE=2). */
+/* Hardening functions (-D_FORTIFY_SOURCE=2), only functions from above */
 HOOK_VAR_FILE2(int, __printf_chk, stdout, __vprintf_chk,
                int, flag, const char *, format)
 HOOK_VAR_FILE3(int, __fprintf_chk, fp, __vfprintf_chk,
@@ -302,6 +302,7 @@ int fcntl(int fd, int cmd, ...) {
     va_start(ap, cmd);
     result = real_fcntl(fd, cmd, va_arg(ap, void *));
     va_end(ap);
+
     /* We only care about duping fds. */
     if (cmd == F_DUPFD && result != -1) {
         int saved_errno = errno;
