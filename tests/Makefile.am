@@ -1,10 +1,12 @@
 TESTS = run.sh
-check_PROGRAMS = example example_vfork
+check_PROGRAMS = example example_exec example_vfork
 example_SOURCES = example.c
+example_exec_SOURCES = example_exec.c
 example_vfork_SOURCES = example_vfork.c
 
 dist_check_SCRIPTS = run.sh lib.sh
 dist_check_DATA = example.expected \
+                  example_exec.expected \
                   example_vfork.expected \
                   example-noforce.sh \
                   example-noforce.sh.expected \

@@ -92,14 +92,11 @@ static void dup_fd(int oldfd, int newfd) {
     if (tracked_fds_find(oldfd)) {
         if (!tracked_fds_find(newfd)) {
             tracked_fds_add(newfd);
-            update_environment();
         }
     /* We are not tracking this file descriptor, remove newfd from the list
      * (if present). */
     } else {
-        if (tracked_fds_remove(newfd)) {
-            update_environment();
-        }
+        tracked_fds_remove(newfd);
     }
 }
 
@@ -347,3 +344,125 @@ pid_t vfork(void) {
     return fork();
 }
 #endif
+
+
+/* Hook execve() and the other exec*() functions. Some shells use exec*() with
+ * a custom environment which doesn't necessarily contain our updates to
+ * ENV_NAME_FDS. It's also faster to update the environment only when
+ * necessary, right before the exec() to pass it to the new process. */
+
+static int (*real_execve)(const char *filename, char *const argv[], char *const env[]);
+int execve(const char *filename, char *const argv[], char *const env[]) {
+    DLSYM_FUNCTION(real_execve, "execve");
+
+    int found = 0;
+    size_t index = 0;
+
+    /* Count arguments and search for existing ENV_NAME_FDS environment
+     * variable. */
+    size_t count = 0;
+    char * const *x = env;
+    while (*x) {
+        if (!strncmp(*x, ENV_NAME_FDS "=", strlen(ENV_NAME_FDS) + 1)) {
+            found = 1;
+            index = count;
+        }
+
+        x++;
+        count++;
+    }
+    /* Terminating NULL. */
+    count++;
+
+    char *env_copy[count + 1 /* space for our new entry if necessary */];
+    memcpy(env_copy, env, count * sizeof(char *));
+
+    /* Make sure the information from the environment is loaded. We can't just
+     * do nothing (like update_environment()) because the caller might pass a
+     * different environment which doesn't include any of our settings. */
+    if (!initialized) {
+        init_from_environment();
+    }
+
+    char fds_env[strlen(ENV_NAME_FDS) + 1 + update_environment_buffer_size()];
+    strcpy(fds_env, ENV_NAME_FDS "=");
+    update_environment_buffer(fds_env + strlen(ENV_NAME_FDS) + 1);
+
+    if (found) {
+        env_copy[index] = fds_env;
+    } else {
+        /* If the process removed ENV_NAME_FDS from the environment, re-add
+         * it. */
+        env_copy[count-1] = fds_env;
+        env_copy[count] = NULL;
+    }
+
+    return real_execve(filename, argv, env_copy);
+}
+
+#define EXECL_COPY_VARARGS_START(args) \
+    va_list ap; \
+    char *x; \
+    \
+    /* Count arguments. */ \
+    size_t count = 1; /* arg */ \
+    va_start(ap, arg); \
+    while (va_arg(ap, const char *)) { \
+        count++; \
+    } \
+    va_end(ap); \
+    \
+    /* Copy varargs. */ \
+    char *args[count + 1 /* terminating NULL */]; \
+    args[0] = (char *)arg; \
+    \
+    size_t i = 1; \
+    va_start(ap, arg); \
+    while ((x = va_arg(ap, char *))) { \
+        args[i++] = x; \
+    } \
+    args[i] = NULL;
+#define EXECL_COPY_VARARGS_END(args) \
+    va_end(ap);
+#define EXECL_COPY_VARARGS(args) \
+    EXECL_COPY_VARARGS_START(args); \
+    EXECL_COPY_VARARGS_END(args);
+
+int execl(const char *path, const char *arg, ...) {
+    EXECL_COPY_VARARGS(args);
+
+    update_environment();
+    return execv(path, args);
+}
+
+int execlp(const char *file, const char *arg, ...) {
+    EXECL_COPY_VARARGS(args);
+
+    update_environment();
+    return execvp(file, args);
+}
+
+int execle(const char *path, const char *arg, ... /*, char *const envp[] */) {
+    EXECL_COPY_VARARGS_START(args);
+    /* Get envp[] located after arguments. */
+    char * const *envp = va_arg(ap, char * const *);
+    EXECL_COPY_VARARGS_END(args);
+
+    return execve(path, args, envp);
+}
+
+static int (*real_execv)(const char *path, char *const argv[]);
+int execv(const char *path, char *const argv[]) {
+    DLSYM_FUNCTION(real_execv, "execv");
+
+    update_environment();
+    return real_execv(path, argv);
+}
+
+static int (*real_execvp)(const char *path, char *const argv[]);
+int execvp(const char *path, char *const argv[]) {
+    DLSYM_FUNCTION(real_execvp, "execvp");
+
+    update_environment();
+    return real_execvp(path, argv);
+}

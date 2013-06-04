@@ -33,9 +33,11 @@ force_write=1
 test_script example-simple.sh
 test_script example-redirects.sh
 test_program example
+test_program example_exec
 test_program example_vfork
 
 test_script_subshell example-simple.sh
 test_script_subshell example-redirects.sh
 test_program_subshell example
+test_program_subshell example_exec
 test_program_subshell example_vfork

@@ -121,19 +121,7 @@ static void init_from_environment(void) {
 #endif
 }
 
-static void update_environment(void) {
-#ifdef DEBUG
-    debug("update_environment()\t\t[%d]\n", getpid());
-#endif
-
-    /* An integer (32-bit) has at most 10 digits, + 1 for the comma after each
-     * number. Bigger file descriptors (which shouldn't occur in reality) are
-     * skipped. */
-    char env[tracked_fds_count * (10 + 1) + 1 /* to fit '\0' */ ];
-    env[0] = 0;
-
-    char *x = env;
-
+static void update_environment_buffer(char *x) {
     size_t i;
     for (i = 0; i < tracked_fds_count; i++) {
         int length = snprintf(x, 10 + 1, "%d", tracked_fds[i]);
@@ -148,6 +136,28 @@ static void update_environment(void) {
         /* Make sure the string is always zero terminated. */
         *x = 0;
     }
+}
+inline static size_t update_environment_buffer_size(void) {
+    /* An integer (32-bit) has at most 10 digits, + 1 for the comma after each
+     * number. Bigger file descriptors (which shouldn't occur in reality) are
+     * skipped. */
+    return tracked_fds_count * (10 + 1) + 1 /* to fit '\0' */;
+}
+static void update_environment(void) {
+#ifdef DEBUG
+    debug("update_environment()\t\t[%d]\n", getpid());
+#endif
+
+    /* If we haven't parsed the environment we also haven't modified it - so
+     * nothing to do. */
+    if (!initialized) {
+        return;
+    }
+
+    char env[update_environment_buffer_size()];
+    env[0] = 0;
+
+    update_environment_buffer(env);
 
 #if 0
     debug("    setenv('%s', '%s', 1)\n", ENV_NAME_FDS, env);
