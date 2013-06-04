@@ -106,7 +106,9 @@ static void update_environment(void) {
     /* An integer (32-bit) has at most 10 digits, + 1 for the comma after each
      * number. Bigger file descriptors (which shouldn't occur in reality) are
      * skipped. */
-    char env[tracked_fds_count * (10 + 1) * sizeof(char)];
+    char env[tracked_fds_count * (10 + 1) + 1 /* to fit '\0' */ ];
+    env[0] = 0;
+
     char *x = env;
 
     size_t i;
