@@ -74,7 +74,7 @@ run_test() {
             export COLORED_STDERR_FORCE_WRITE
         fi
 
-        "$testcase" > output 2>&1
+        "$@" "$testcase" > output 2>&1
     )
 
     diff -u "$expected" output \
@@ -84,8 +84,18 @@ run_test() {
 }
 
 test_script() {
-    run_test "$srcdir/$1" "$srcdir/$1.expected"
+    testcase="$1"
+    shift
+    run_test "$srcdir/$testcase" "$srcdir/$testcase.expected" "$@"
+}
+test_script_subshell() {
+    test_script "$1" bash -c 'bash $1' ''
 }
 test_program() {
-    run_test "$builddir/$1" "$srcdir/$1.expected"
+    testcase="$1"
+    shift
+    run_test "$builddir/$testcase" "$srcdir/$testcase.expected" "$@"
+}
+test_program_subshell() {
+    test_program "$1" sh -c '$1' ''
 }
