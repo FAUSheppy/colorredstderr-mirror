@@ -161,7 +161,8 @@ static void update_environment(void) {
 static void tracked_fds_add(int fd) {
     if (tracked_fds_count >= tracked_fds_space) {
         size_t new_space = tracked_fds_space + TRACKFDS_REALLOC_STEP;
-        if (!realloc(tracked_fds, sizeof(*tracked_fds) * new_space)) {
+        int *tmp = realloc(tracked_fds, sizeof(*tracked_fds) * new_space);
+        if (!tmp) {
             /* We can do nothing, just ignore the error. We made sure not to
              * destroy our state, so the new descriptor is ignored without any
              * other consequences. */
@@ -171,6 +172,7 @@ static void tracked_fds_add(int fd) {
 #endif
             return;
         }
+        tracked_fds = tmp;
         tracked_fds_space = new_space;
     }
 
