@@ -28,12 +28,27 @@ static size_t tracked_fds_count;
 static size_t tracked_fds_space;
 
 
+#ifdef DEBUG
+static void tracked_fds_debug(void) {
+    debug("    tracked_fds: %d/%d\t\t[%d]\n", tracked_fds_count,
+                                              tracked_fds_space,
+                                              getpid());
+    size_t i;
+    for (i = 0; i < tracked_fds_count; i++) {
+        debug("    tracked_fds[%d]: %d\n", i, tracked_fds[i]);
+    }
+}
+#endif
+
 /* Load tracked file descriptors from the environment. The environment is used
  * to pass the information to child processes.
  *
  * ENV_NAME_FDS has the following format: Each descriptor as string followed
  * by a comma; there's a trailing comma. Example: "2,4,". */
 static void init_from_environment(void) {
+#ifdef DEBUG
+    debug("init_from_environment()\t\t[%d]\n", getpid());
+#endif
     const char *env;
 
     initialized = 1;
@@ -100,9 +115,17 @@ static void init_from_environment(void) {
     tracked_fds_count = count;
 
     free(env_copy);
+
+#ifdef DEBUG
+    tracked_fds_debug();
+#endif
 }
 
 static void update_environment(void) {
+#ifdef DEBUG
+    debug("update_environment()\t\t[%d]\n", getpid());
+#endif
+
     /* An integer (32-bit) has at most 10 digits, + 1 for the comma after each
      * number. Bigger file descriptors (which shouldn't occur in reality) are
      * skipped. */
@@ -126,20 +149,14 @@ static void update_environment(void) {
         *x = 0;
     }
 
+#if 0
+    debug("    setenv('%s', '%s', 1)\n", ENV_NAME_FDS, env);
+#endif
+
     setenv(ENV_NAME_FDS, env, 1 /* overwrite */);
 }
 
 
-#ifdef DEBUG
-static void tracked_fds_debug(void) {
-    debug("tracked_fds: %d/%d\t[%d]\n", tracked_fds_count, tracked_fds_space,
-                                        getpid());
-    size_t i;
-    for (i = 0; i < tracked_fds_count; i++) {
-        debug("tracked_fds[%d]: %d\n", i, tracked_fds[i]);
-    }
-}
-#endif
 
 static void tracked_fds_add(int fd) {
     if (tracked_fds_count >= tracked_fds_space) {
@@ -148,6 +165,10 @@ static void tracked_fds_add(int fd) {
             /* We can do nothing, just ignore the error. We made sure not to
              * destroy our state, so the new descriptor is ignored without any
              * other consequences. */
+#ifdef DEBUG
+            debug("realloc(tracked_fds, %zu) failed! [%d]\n",
+                  sizeof(*tracked_fds) * new_space, getpid());
+#endif
             return;
         }
         tracked_fds_space = new_space;
@@ -156,6 +177,7 @@ static void tracked_fds_add(int fd) {
     tracked_fds[tracked_fds_count++] = fd;
 
 #ifdef DEBUG
+    debug("tracked_fds_add(): %-3d\t\t[%d]\n", fd, getpid());
     tracked_fds_debug();
 #endif
 }
@@ -171,6 +193,7 @@ static int tracked_fds_remove(int fd) {
         tracked_fds_count--;
 
 #ifdef DEBUG
+        debug("tracked_fds_remove(): %-3d\t[%d]\n", fd, getpid());
         tracked_fds_debug();
 #endif
 

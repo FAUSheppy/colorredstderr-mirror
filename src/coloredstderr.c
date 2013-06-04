@@ -77,7 +77,7 @@ static int check_handle_fd(int fd) {
 
 static void dup_fd(int oldfd, int newfd) {
 #ifdef DEBUG
-    debug("%d -> %d\t\t\t[%d]\n", oldfd, newfd, getpid());
+    debug("%3d -> %3d\t\t\t[%d]\n", oldfd, newfd, getpid());
 #endif
 
     if (!initialized) {
@@ -105,7 +105,7 @@ static void dup_fd(int oldfd, int newfd) {
 
 static void close_fd(int fd) {
 #ifdef DEBUG
-    debug("%d -> .\t\t\t[%d]\n", fd, getpid());
+    debug("%3d ->   .\t\t\t[%d]\n", fd, getpid());
 #endif
 
     if (!initialized) {
