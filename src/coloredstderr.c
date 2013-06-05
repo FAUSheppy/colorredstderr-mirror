@@ -62,6 +62,9 @@ static int check_handle_fd(int fd) {
     if (!initialized) {
         init_from_environment();
     }
+    if (tracked_fds_count == 0) {
+        return 0;
+    }
 
     /* Never touch anything not going to a terminal - unless we are explicitly
      * asked to do so. */
@@ -69,9 +72,6 @@ static int check_handle_fd(int fd) {
         return 0;
     }
 
-    if (tracked_fds_count == 0) {
-        return 0;
-    }
     return tracked_fds_find(fd);
 }
 
@@ -108,10 +108,10 @@ static void close_fd(int fd) {
     if (!initialized) {
         init_from_environment();
     }
-
     if (tracked_fds_count == 0) {
         return;
     }
+
     tracked_fds_remove(fd);
 }
 
