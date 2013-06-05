@@ -66,10 +66,8 @@ static void init_from_environment(void) {
         return;
     }
     /* Environment is read-only. */
-    char *env_copy = strdup(env);
-    if (!env_copy) {
-        return;
-    }
+    char env_copy[strlen(env) + 1];
+    strcpy(env_copy, env);
 
     char *x;
 
@@ -83,7 +81,6 @@ static void init_from_environment(void) {
 
     tracked_fds = malloc(tracked_fds_space * sizeof(*tracked_fds));
     if (!tracked_fds) {
-        free(env_copy);
         return;
     }
 
@@ -113,8 +110,6 @@ static void init_from_environment(void) {
     }
 
     tracked_fds_count = count;
-
-    free(env_copy);
 
 #ifdef DEBUG
     tracked_fds_debug();
