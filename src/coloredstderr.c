@@ -30,6 +30,10 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifdef HAVE_ERROR_H
+# include <error.h>
+#endif
+
 /* Conflicting declaration in glibc. */
 #undef fwrite_unlocked
 
@@ -230,6 +234,74 @@ HOOK_FILE1(int, puts_unlocked, stdout,
 /* perror(3) */
 HOOK_VOID1(void, perror, STDERR_FILENO,
            const char *, s)
+
+/* error(3) */
+#ifdef HAVE_ERROR_H
+static void  error_vararg(int status, int errnum,
+                   const char *filename, unsigned int linenum,
+                   const char *format, va_list ap) {
+    static const char *last_filename;
+    static unsigned int last_linenum;
+
+    /* Skip this error message if requested and if there was already an error
+     * in the same file/line. */
+    if (error_one_per_line
+            && filename != NULL && linenum != 0
+            && filename == last_filename && linenum == last_linenum) {
+        return;
+    }
+    last_filename = filename;
+    last_linenum  = linenum;
+
+    error_message_count++;
+
+    fflush(stdout);
+
+    if (error_print_progname) {
+        error_print_progname();
+    } else {
+        fprintf(stderr, "%s:", program_invocation_name);
+    }
+    if (filename != NULL && linenum != 0) {
+        fprintf(stderr, "%s:%u:", filename, linenum);
+        if (error_print_progname) {
+            fprintf(stderr, " ");
+        }
+    }
+    if (!error_print_progname) {
+        fprintf(stderr, " ");
+    }
+
+
+    vfprintf(stderr, format, ap);
+
+    if (errnum != 0) {
+        fprintf(stderr, ": %s", strerror(errnum));
+    }
+
+    fprintf(stderr, "\n");
+
+    if (status != 0) {
+        exit(status);
+    }
+}
+void error_at_line(int status, int errnum,
+                   const char *filename, unsigned int linenum,
+                   const char *format, ...) {
+    va_list ap;
+
+    va_start(ap, format);
+    error_vararg(status, errnum, filename, linenum, format, ap);
+    va_end(ap);
+}
+void error(int status, int errnum, const char *format, ...) {
+    va_list ap;
+
+    va_start(ap, format);
+    error_vararg(status, errnum, NULL, 0, format, ap);
+    va_end(ap);
+}
+#endif
 
 
 /* Hook functions which duplicate file descriptors to track them. */

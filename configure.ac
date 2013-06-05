@@ -32,7 +32,7 @@ dnl Used by test suite.
 AC_PROG_SED
 AC_PROG_EGREP
 
-AC_CHECK_HEADERS([fcntl.h])
+AC_CHECK_HEADERS([fcntl.h error.h])
 
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
@@ -50,6 +50,9 @@ AC_ARG_ENABLE([debug],
               [if test "x$enableval" = xyes; then
                    AC_DEFINE([DEBUG], 1, [Define to enable debug output.])
                fi])
+
+dnl Used in tests/Makefile.am to build the test only if error() is available.
+AM_CONDITIONAL([HAVE_ERROR_H],[test "x$ac_cv_header_error_h" = xyes])
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 AC_OUTPUT

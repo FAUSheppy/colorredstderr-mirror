@@ -23,6 +23,8 @@
 /tests/Makefile.in
 /tests/example
 /tests/example.o
+/tests/example_error
+/tests/example_error.o
 /tests/example_exec
 /tests/example_exec.o
 /tests/example_vfork
