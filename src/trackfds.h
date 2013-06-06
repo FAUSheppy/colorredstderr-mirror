@@ -81,6 +81,10 @@ static void init_from_environment(void) {
 
     tracked_fds_list = malloc(tracked_fds_list_space * sizeof(*tracked_fds_list));
     if (!tracked_fds_list) {
+#ifdef DEBUG
+        warning("malloc(%zu): failed [%d]\n",
+                tracked_fds_list_space * sizeof(*tracked_fds_list), getpid());
+#endif
         return;
     }
 
@@ -122,6 +126,10 @@ static void update_environment_buffer(char *x) {
         int length = snprintf(x, 10 + 1, "%d", tracked_fds_list[i]);
         if (length >= 10 + 1) {
             /* Integer too big to fit the buffer, skip it. */
+#ifdef DEBUG
+            warning("update_environment_buffer_entry(): truncated fd: %d [%d]\n",
+                    tracked_fds_list[i], getpid());
+#endif
             continue;
         }
 
@@ -166,14 +174,15 @@ static void update_environment(void) {
 static void tracked_fds_add(int fd) {
     if (tracked_fds_list_count >= tracked_fds_list_space) {
         size_t new_space = tracked_fds_list_space + TRACKFDS_REALLOC_STEP;
-        int *tmp = realloc(tracked_fds_list, sizeof(*tracked_fds_list) * new_space);
+        int *tmp = realloc(tracked_fds_list,
+                           sizeof(*tracked_fds_list) * new_space);
         if (!tmp) {
             /* We can do nothing, just ignore the error. We made sure not to
              * destroy our state, so the new descriptor is ignored without any
              * other consequences. */
 #ifdef DEBUG
-            debug("realloc(tracked_fds_list, %zu) failed! [%d]\n",
-                  sizeof(*tracked_fds_list) * new_space, getpid());
+            warning("realloc(tracked_fds_list, %zu) failed! [%d]\n",
+                    sizeof(*tracked_fds_list) * new_space, getpid());
 #endif
             return;
         }

@@ -35,6 +35,8 @@
 
 #ifdef DEBUG
 # define DEBUG_FILE "colored_stderr_debug_log.txt"
+/* Created in the user's home directory, appends to existing file. */
+# define WARNING_FILE "colored_stderr_warning_log.txt"
 #endif
 
 #endif
