@@ -39,9 +39,9 @@
 
 
 /* Used by various functions, including debug(). */
-static ssize_t (*real_write)(int, const void *, size_t);
+static ssize_t (*real_write)(int, void const *, size_t);
 static int (*real_close)(int);
-static size_t (*real_fwrite)(const void *, size_t, size_t, FILE *);
+static size_t (*real_fwrite)(void const *, size_t, size_t, FILE *);
 
 /* Did we already (try to) parse the environment and setup the necessary
  * variables? */
@@ -179,13 +179,13 @@ static void handle_file_post(FILE *stream, int action) {
 /* Hook all important output functions to manipulate their output. */
 
 HOOK_FD3(ssize_t, write, fd,
-         int, fd, const void *, buf, size_t, count)
+         int, fd, void const *, buf, size_t, count)
 HOOK_FILE4(size_t, fwrite, stream,
-           const void *, ptr, size_t, size, size_t, nmemb, FILE *, stream)
+           void const *, ptr, size_t, size, size_t, nmemb, FILE *, stream)
 
 /* puts(3) */
 HOOK_FILE2(int, fputs, stream,
-           const char *, s, FILE *, stream)
+           char const *, s, FILE *, stream)
 HOOK_FILE2(int, fputc, stream,
            int, c, FILE *, stream)
 HOOK_FILE2(int, putc, stream,
@@ -193,32 +193,32 @@ HOOK_FILE2(int, putc, stream,
 HOOK_FILE1(int, putchar, stdout,
            int, c)
 HOOK_FILE1(int, puts, stdout,
-           const char *, s)
+           char const *, s)
 
 /* printf(3), excluding all s*() and vs*() functions (no output) */
 HOOK_VAR_FILE1(int, printf, stdout, vprintf,
-               const char *, format)
+               char const *, format)
 HOOK_VAR_FILE2(int, fprintf, stream, vfprintf,
-               FILE *, stream, const char *, format)
+               FILE *, stream, char const *, format)
 HOOK_FILE2(int, vprintf, stdout,
-           const char *, format, va_list, ap)
+           char const *, format, va_list, ap)
 HOOK_FILE3(int, vfprintf, stream,
-           FILE *, stream, const char *, format, va_list, ap)
+           FILE *, stream, char const *, format, va_list, ap)
 /* Hardening functions (-D_FORTIFY_SOURCE=2), only functions from above */
 HOOK_VAR_FILE2(int, __printf_chk, stdout, __vprintf_chk,
-               int, flag, const char *, format)
+               int, flag, char const *, format)
 HOOK_VAR_FILE3(int, __fprintf_chk, fp, __vfprintf_chk,
-               FILE *, fp, int, flag, const char *, format)
+               FILE *, fp, int, flag, char const *, format)
 HOOK_FILE3(int, __vprintf_chk, stdout,
-           int, flag, const char *, format, va_list, ap)
+           int, flag, char const *, format, va_list, ap)
 HOOK_FILE4(int, __vfprintf_chk, stream,
-           FILE *, stream, int, flag, const char *, format, va_list, ap)
+           FILE *, stream, int, flag, char const *, format, va_list, ap)
 
 /* unlocked_stdio(3), only functions from above are hooked */
 HOOK_FILE4(size_t, fwrite_unlocked, stream,
-           const void *, ptr, size_t, size, size_t, nmemb, FILE *, stream)
+           void const *, ptr, size_t, size, size_t, nmemb, FILE *, stream)
 HOOK_FILE2(int, fputs_unlocked, stream,
-           const char *, s, FILE *, stream)
+           char const *, s, FILE *, stream)
 HOOK_FILE2(int, fputc_unlocked, stream,
            int, c, FILE *, stream)
 HOOK_FILE2(int, putc_unlocked, stream,
@@ -226,18 +226,18 @@ HOOK_FILE2(int, putc_unlocked, stream,
 HOOK_FILE1(int, putchar_unlocked, stdout,
            int, c)
 HOOK_FILE1(int, puts_unlocked, stdout,
-           const char *, s)
+           char const *, s)
 
 /* perror(3) */
 HOOK_VOID1(void, perror, STDERR_FILENO,
-           const char *, s)
+           char const *, s)
 
 /* error(3) */
 #ifdef HAVE_ERROR_H
 static void  error_vararg(int status, int errnum,
-                   const char *filename, unsigned int linenum,
-                   const char *format, va_list ap) {
-    static const char *last_filename;
+                   char const *filename, unsigned int linenum,
+                   char const *format, va_list ap) {
+    static char const *last_filename;
     static unsigned int last_linenum;
 
     /* Skip this error message if requested and if there was already an error
@@ -283,15 +283,15 @@ static void  error_vararg(int status, int errnum,
     }
 }
 void error_at_line(int status, int errnum,
-                   const char *filename, unsigned int linenum,
-                   const char *format, ...) {
+                   char const *filename, unsigned int linenum,
+                   char const *format, ...) {
     va_list ap;
 
     va_start(ap, format);
     error_vararg(status, errnum, filename, linenum, format, ap);
     va_end(ap);
 }
-void error(int status, int errnum, const char *format, ...) {
+void error(int status, int errnum, char const *format, ...) {
     va_list ap;
 
     va_start(ap, format);
@@ -420,8 +420,8 @@ pid_t vfork(void) {
  * ENV_NAME_FDS. It's also faster to update the environment only when
  * necessary, right before the exec() to pass it to the new process. */
 
-static int (*real_execve)(const char *filename, char *const argv[], char *const env[]);
-int execve(const char *filename, char *const argv[], char *const env[]) {
+static int (*real_execve)(char const *filename, char * const argv[], char * const env[]);
+int execve(char const *filename, char * const argv[], char * const env[]) {
     DLSYM_FUNCTION(real_execve, "execve");
 
     int found = 0;
@@ -497,21 +497,21 @@ int execve(const char *filename, char *const argv[], char *const env[]) {
     EXECL_COPY_VARARGS_START(args); \
     EXECL_COPY_VARARGS_END(args);
 
-int execl(const char *path, const char *arg, ...) {
+int execl(char const *path, char const *arg, ...) {
     EXECL_COPY_VARARGS(args);
 
     update_environment();
     return execv(path, args);
 }
 
-int execlp(const char *file, const char *arg, ...) {
+int execlp(char const *file, char const *arg, ...) {
     EXECL_COPY_VARARGS(args);
 
     update_environment();
     return execvp(file, args);
 }
 
-int execle(const char *path, const char *arg, ... /*, char *const envp[] */) {
+int execle(char const *path, char const *arg, ... /*, char * const envp[] */) {
     EXECL_COPY_VARARGS_START(args);
     /* Get envp[] located after arguments. */
     char * const *envp = va_arg(ap, char * const *);
@@ -520,16 +520,16 @@ int execle(const char *path, const char *arg, ... /*, char *const envp[] */) {
     return execve(path, args, envp);
 }
 
-static int (*real_execv)(const char *path, char *const argv[]);
-int execv(const char *path, char *const argv[]) {
+static int (*real_execv)(char const *path, char * const argv[]);
+int execv(char const *path, char * const argv[]) {
     DLSYM_FUNCTION(real_execv, "execv");
 
     update_environment();
     return real_execv(path, argv);
 }
 
-static int (*real_execvp)(const char *path, char *const argv[]);
-int execvp(const char *path, char *const argv[]) {
+static int (*real_execvp)(char const *path, char * const argv[]);
+int execvp(char const *path, char * const argv[]) {
     DLSYM_FUNCTION(real_execvp, "execvp");
 
     update_environment();

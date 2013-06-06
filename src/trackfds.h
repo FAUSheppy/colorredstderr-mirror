@@ -76,7 +76,7 @@ static void init_from_environment(void) {
 #ifdef DEBUG
     debug("init_from_environment()\t\t[%d]\n", getpid());
 #endif
-    const char *env;
+    char const *env;
 
     initialized = 1;
     tracked_fds_list_count = 0;

@@ -20,7 +20,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H 1
 
-static void debug_write(int fd, int first_call, const char *format, va_list ap) {
+static void debug_write(int fd, int first_call, char const *format, va_list ap) {
     char buffer[1024];
 
     int written = vsnprintf(buffer, sizeof(buffer), format, ap);
@@ -41,7 +41,7 @@ static void debug_write(int fd, int first_call, const char *format, va_list ap) 
     real_close(fd);
 }
 
-static void debug(const char *format, ...) {
+static void debug(char const *format, ...) {
     va_list ap;
 
     /* If the file doesn't exist, do nothing. Prevents writing log files in
@@ -59,7 +59,7 @@ static void debug(const char *format, ...) {
     va_end(ap);
 }
 
-static void warning(const char *format, ...) {
+static void warning(char const *format, ...) {
     va_list ap;
 
     char *home = getenv("HOME");
