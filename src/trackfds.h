@@ -135,7 +135,6 @@ static void init_from_environment(void) {
                  * elements doesn't hurt. */
                 if (!init_tracked_fds_list(count)) {
                     /* Couldn't allocate memory, skip this entry. */
-                    warning("foo\n");
                     goto next;
                 }
             }
