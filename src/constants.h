@@ -30,6 +30,10 @@
 #define DEFAULT_PRE_STRING "\e[91m"
 #define DEFAULT_POST_STRING "\e[0m"
 
+/* Number of elements to allocate statically. Highest descriptor observed in
+ * normal use was 255 (by bash), which yielded this limit to prevent
+ * unnecessary calls to malloc() whenever possible. */
+#define TRACKFDS_STATIC_COUNT 256
 /* Number of new elements to allocate per realloc(). */
 #define TRACKFDS_REALLOC_STEP 10
 

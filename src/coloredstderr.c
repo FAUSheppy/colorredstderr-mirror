@@ -66,7 +66,10 @@ static int check_handle_fd(int fd) {
     if (!initialized) {
         init_from_environment();
     }
-    if (tracked_fds_list_count == 0) {
+
+    /* tracked_fds_find() is most likely faster than calling isatty(),
+     * therefore check if we are tracking this file descriptor first. */
+    if (!tracked_fds_find(fd)) {
         return 0;
     }
 
@@ -76,7 +79,7 @@ static int check_handle_fd(int fd) {
         return 0;
     }
 
-    return tracked_fds_find(fd);
+    return 1;
 }
 
 static void dup_fd(int oldfd, int newfd) {
@@ -86,9 +89,6 @@ static void dup_fd(int oldfd, int newfd) {
 
     if (!initialized) {
         init_from_environment();
-    }
-    if (tracked_fds_list_count == 0) {
-        return;
     }
 
     /* We are already tracking this file descriptor, add newfd to the list as
@@ -111,9 +111,6 @@ static void close_fd(int fd) {
 
     if (!initialized) {
         init_from_environment();
-    }
-    if (tracked_fds_list_count == 0) {
-        return;
     }
 
     tracked_fds_remove(fd);

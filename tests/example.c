@@ -36,6 +36,17 @@ int main(int argc, char **argv) {
 
     fprintf(stderr, "\n");
     fprintf(stdout, "\n");
+    fflush(stdout);
+
+    /* Check usage of tracked_fds_list (at least in parts). No error checking
+     * here! */
+    dup2(STDERR_FILENO, 471);
+    dup2(471, 42);
+    write(471, "more on stderr\n", 15);
+    close(471);
+    dup2(STDOUT_FILENO, 471);
+    write(42, "stderr ...\n", 11);
+    write(471, "more on stdout\n", 15);
 
     return EXIT_SUCCESS;
 }

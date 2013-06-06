@@ -3,3 +3,6 @@
 >STDERR>error!: Success
 <STDERR<>STDERR>write to stderr 2<STDERR<write to stdout 2>STDERR>
 <STDERR<
+>STDERR>more on stderr
+<STDERR<>STDERR>stderr ...
+<STDERR<more on stdout
