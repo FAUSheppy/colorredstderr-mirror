@@ -26,8 +26,9 @@ static void debug(const char *format, ...) {
     /* If the file doesn't exist, do nothing. Prevents writing log files in
      * unexpected places. The user must create the file manually. */
     int fd = open(DEBUG_FILE, O_WRONLY | O_APPEND);
-    if (fd == -1)
+    if (fd == -1) {
         return;
+    }
 
     va_list ap;
     va_start(ap, format);
