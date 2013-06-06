@@ -25,6 +25,13 @@ test "x$srcdir" = x && srcdir=.
 . "$srcdir/lib.sh"
 
 
+# Use valgrind to run the tests if it's available.
+valgrind_cmd=
+if type valgrind >/dev/null 2>&1; then
+    valgrind_cmd='valgrind --quiet --error-exitcode=1'
+fi
+
+
 # Make sure we don't write to non-ttys by default.
 force_write=
 test_script example-noforce.sh

@@ -74,7 +74,7 @@ run_test() {
             export COLORED_STDERR_FORCE_WRITE
         fi
 
-        "$@" "$testcase" > output 2>&1
+        $valgrind_cmd "$@" "$testcase" > output 2>&1
     )
 
     diff -u "$expected" output \
