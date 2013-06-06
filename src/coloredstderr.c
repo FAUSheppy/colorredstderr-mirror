@@ -66,7 +66,7 @@ static int check_handle_fd(int fd) {
     if (!initialized) {
         init_from_environment();
     }
-    if (tracked_fds_count == 0) {
+    if (tracked_fds_list_count == 0) {
         return 0;
     }
 
@@ -87,7 +87,7 @@ static void dup_fd(int oldfd, int newfd) {
     if (!initialized) {
         init_from_environment();
     }
-    if (tracked_fds_count == 0) {
+    if (tracked_fds_list_count == 0) {
         return;
     }
 
@@ -112,7 +112,7 @@ static void close_fd(int fd) {
     if (!initialized) {
         init_from_environment();
     }
-    if (tracked_fds_count == 0) {
+    if (tracked_fds_list_count == 0) {
         return;
     }
 

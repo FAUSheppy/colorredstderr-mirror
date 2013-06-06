@@ -21,21 +21,21 @@
 #define TRACKFDS_H 1
 
 /* List of tracked file descriptors. */
-static int *tracked_fds;
+static int *tracked_fds_list;
 /* Current number of items in the list. */
-static size_t tracked_fds_count;
+static size_t tracked_fds_list_count;
 /* Allocated items, used to reduce realloc()s. */
-static size_t tracked_fds_space;
+static size_t tracked_fds_list_space;
 
 
 #ifdef DEBUG
 static void tracked_fds_debug(void) {
-    debug("    tracked_fds: %d/%d\t\t[%d]\n", tracked_fds_count,
-                                              tracked_fds_space,
-                                              getpid());
+    debug("    tracked_fds_list: %d/%d\t\t[%d]\n", tracked_fds_list_count,
+                                                   tracked_fds_list_space,
+                                                   getpid());
     size_t i;
-    for (i = 0; i < tracked_fds_count; i++) {
-        debug("    tracked_fds[%d]: %d\n", i, tracked_fds[i]);
+    for (i = 0; i < tracked_fds_list_count; i++) {
+        debug("    tracked_fds_list[%d]: %d\n", i, tracked_fds_list[i]);
     }
 }
 #endif
@@ -52,7 +52,7 @@ static void init_from_environment(void) {
     const char *env;
 
     initialized = 1;
-    tracked_fds_count = 0;
+    tracked_fds_list_count = 0;
 
     /* If ENV_NAME_FORCE_WRITE is set and not empty, allow writes to a non-tty
      * device. Use with care! Mainly used for the test suite. */
@@ -77,17 +77,17 @@ static void init_from_environment(void) {
             count++;
         }
     }
-    tracked_fds_space = count + TRACKFDS_REALLOC_STEP;
+    tracked_fds_list_space = count + TRACKFDS_REALLOC_STEP;
 
-    tracked_fds = malloc(tracked_fds_space * sizeof(*tracked_fds));
-    if (!tracked_fds) {
+    tracked_fds_list = malloc(tracked_fds_list_space * sizeof(*tracked_fds_list));
+    if (!tracked_fds_list) {
         return;
     }
 
     size_t i = 0;
 
     /* Parse file descriptor numbers from environment string and store them as
-     * integers in tracked_fds. */
+     * integers in tracked_fds_list. */
     char *last;
     for (x = env_copy, last = env_copy; *x; x++) {
         if (*x != ',') {
@@ -104,12 +104,12 @@ static void init_from_environment(void) {
         }
 
         *x = 0;
-        tracked_fds[i++] = atoi(last);
+        tracked_fds_list[i++] = atoi(last);
 
         last = x + 1;
     }
 
-    tracked_fds_count = count;
+    tracked_fds_list_count = count;
 
 #ifdef DEBUG
     tracked_fds_debug();
@@ -118,8 +118,8 @@ static void init_from_environment(void) {
 
 static void update_environment_buffer(char *x) {
     size_t i;
-    for (i = 0; i < tracked_fds_count; i++) {
-        int length = snprintf(x, 10 + 1, "%d", tracked_fds[i]);
+    for (i = 0; i < tracked_fds_list_count; i++) {
+        int length = snprintf(x, 10 + 1, "%d", tracked_fds_list[i]);
         if (length >= 10 + 1) {
             /* Integer too big to fit the buffer, skip it. */
             continue;
@@ -136,7 +136,7 @@ inline static size_t update_environment_buffer_size(void) {
     /* An integer (32-bit) has at most 10 digits, + 1 for the comma after each
      * number. Bigger file descriptors (which shouldn't occur in reality) are
      * skipped. */
-    return tracked_fds_count * (10 + 1) + 1 /* to fit '\0' */;
+    return tracked_fds_list_count * (10 + 1) + 1 /* to fit '\0' */;
 }
 static void update_environment(void) {
 #ifdef DEBUG
@@ -164,24 +164,24 @@ static void update_environment(void) {
 
 
 static void tracked_fds_add(int fd) {
-    if (tracked_fds_count >= tracked_fds_space) {
-        size_t new_space = tracked_fds_space + TRACKFDS_REALLOC_STEP;
-        int *tmp = realloc(tracked_fds, sizeof(*tracked_fds) * new_space);
+    if (tracked_fds_list_count >= tracked_fds_list_space) {
+        size_t new_space = tracked_fds_list_space + TRACKFDS_REALLOC_STEP;
+        int *tmp = realloc(tracked_fds_list, sizeof(*tracked_fds_list) * new_space);
         if (!tmp) {
             /* We can do nothing, just ignore the error. We made sure not to
              * destroy our state, so the new descriptor is ignored without any
              * other consequences. */
 #ifdef DEBUG
-            debug("realloc(tracked_fds, %zu) failed! [%d]\n",
-                  sizeof(*tracked_fds) * new_space, getpid());
+            debug("realloc(tracked_fds_list, %zu) failed! [%d]\n",
+                  sizeof(*tracked_fds_list) * new_space, getpid());
 #endif
             return;
         }
-        tracked_fds = tmp;
-        tracked_fds_space = new_space;
+        tracked_fds_list = tmp;
+        tracked_fds_list_space = new_space;
     }
 
-    tracked_fds[tracked_fds_count++] = fd;
+    tracked_fds_list[tracked_fds_list_count++] = fd;
 
 #ifdef DEBUG
     debug("tracked_fds_add(): %-3d\t\t[%d]\n", fd, getpid());
@@ -190,14 +190,14 @@ static void tracked_fds_add(int fd) {
 }
 static int tracked_fds_remove(int fd) {
     size_t i;
-    for (i = 0; i < tracked_fds_count; i++) {
-        if (fd != tracked_fds[i]) {
+    for (i = 0; i < tracked_fds_list_count; i++) {
+        if (fd != tracked_fds_list[i]) {
             continue;
         }
 
-        memmove(tracked_fds + i, tracked_fds + i + 1,
-                sizeof(*tracked_fds) * (tracked_fds_count - i - 1));
-        tracked_fds_count--;
+        memmove(tracked_fds_list + i, tracked_fds_list + i + 1,
+                sizeof(*tracked_fds_list) * (tracked_fds_list_count - i - 1));
+        tracked_fds_list_count--;
 
 #ifdef DEBUG
         debug("tracked_fds_remove(): %-3d\t[%d]\n", fd, getpid());
@@ -213,8 +213,8 @@ static int tracked_fds_remove(int fd) {
 }
 static int tracked_fds_find(int fd) {
     size_t i;
-    for (i = 0; i < tracked_fds_count; i++) {
-        if (fd == tracked_fds[i]) {
+    for (i = 0; i < tracked_fds_list_count; i++) {
+        if (fd == tracked_fds_list[i]) {
             return 1;
         }
     }
