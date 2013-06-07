@@ -225,8 +225,6 @@ HOOK_FILE2(int, putc_unlocked, stream,
            int, c, FILE *, stream)
 HOOK_FILE1(int, putchar_unlocked, stdout,
            int, c)
-HOOK_FILE1(int, puts_unlocked, stdout,
-           char const *, s)
 
 /* perror(3) */
 HOOK_VOID1(void, perror, STDERR_FILENO,
