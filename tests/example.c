@@ -24,6 +24,8 @@
 
 
 int main(int argc, char **argv) {
+    (void)argv;
+
     fprintf(stderr, "write to stderr: %d\n", argc);
     printf("write to stdout\n");
     fflush(stdout);

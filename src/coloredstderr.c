@@ -119,14 +119,14 @@ static void close_fd(int fd) {
 
 /* "Action" handlers called when a file descriptor is matched. */
 
-static char *pre_string;
+static char const *pre_string;
 static size_t pre_string_size;
-static char *post_string;
+static char const *post_string;
 static size_t post_string_size;
 
 /* Load alternative pre/post strings from the environment if available, fall
  * back to default values. */
-inline static void init_pre_post_string() {
+inline static void init_pre_post_string(void) {
     pre_string = getenv(ENV_NAME_PRE_STRING);
     if (!pre_string) {
         pre_string = DEFAULT_PRE_STRING;
@@ -476,7 +476,7 @@ int execve(char const *filename, char * const argv[], char * const env[]) {
     /* Count arguments. */ \
     size_t count = 1; /* arg */ \
     va_start(ap, arg); \
-    while (va_arg(ap, const char *)) { \
+    while (va_arg(ap, char const *)) { \
         count++; \
     } \
     va_end(ap); \

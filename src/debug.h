@@ -62,7 +62,7 @@ static void debug(char const *format, ...) {
 static void warning(char const *format, ...) {
     va_list ap;
 
-    char *home = getenv("HOME");
+    char const *home = getenv("HOME");
     if (!home) {
         return;
     }
