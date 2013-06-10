@@ -32,6 +32,10 @@ dnl Used by test suite.
 AC_PROG_SED
 AC_PROG_EGREP
 
+if test "x$GCC" = xyes; then
+    CFLAGS="-Wall -Wextra -Wconversion $CFLAGS"
+fi
+
 AC_CHECK_HEADERS([fcntl.h error.h])
 
 AC_TYPE_PID_T
