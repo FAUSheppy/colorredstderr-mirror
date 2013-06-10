@@ -34,6 +34,7 @@
  * Terminate program on failure. */
 #define DLSYM_FUNCTION(pointer, name) \
     if (NULL == (pointer)) { \
+        int saved_errnox = errno; \
         char *error; \
         dlerror(); /* Clear possibly existing error. */ \
         \
@@ -44,6 +45,7 @@
              * failed to load too. */ \
             abort(); \
         } \
+        errno = saved_errnox; \
     }
 
 #endif

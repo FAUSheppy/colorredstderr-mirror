@@ -44,10 +44,13 @@ static void debug_write(int fd, int first_call, char const *format, va_list ap) 
 static void debug(char const *format, ...) {
     va_list ap;
 
+    int saved_errno = errno;
+
     /* If the file doesn't exist, do nothing. Prevents writing log files in
      * unexpected places. The user must create the file manually. */
     int fd = open(DEBUG_FILE, O_WRONLY | O_APPEND);
     if (fd == -1) {
+        errno = saved_errno;
         return;
     }
 
@@ -57,13 +60,18 @@ static void debug(char const *format, ...) {
     va_start(ap, format);
     debug_write(fd, call_count == 1, format, ap);
     va_end(ap);
+
+    errno = saved_errno;
 }
 
 static void warning(char const *format, ...) {
     va_list ap;
 
+    int saved_errno = errno;
+
     char const *home = getenv("HOME");
     if (!home) {
+        errno = saved_errno;
         return;
     }
 
@@ -75,6 +83,7 @@ static void warning(char const *format, ...) {
     /* Create the warning file if it doesn't exist yet. */
     int fd = open(path, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
     if (fd == -1) {
+        errno = saved_errno;
         return;
     }
 
@@ -84,6 +93,8 @@ static void warning(char const *format, ...) {
     va_start(ap, format);
     debug_write(fd, call_count == 1, format, ap);
     va_end(ap);
+
+    errno = saved_errno;
 }
 
 #endif

@@ -78,6 +78,8 @@ static void init_from_environment(void) {
 #endif
     char const *env;
 
+    int saved_errno = errno;
+
     initialized = 1;
     tracked_fds_list_count = 0;
 
@@ -90,6 +92,7 @@ static void init_from_environment(void) {
 
     env = getenv(ENV_NAME_FDS);
     if (!env) {
+        errno = saved_errno;
         return;
     }
     /* Environment is read-only. */
@@ -153,6 +156,8 @@ next:
 #ifdef DEBUG
     tracked_fds_debug();
 #endif
+
+    errno = saved_errno;
 }
 
 static char *update_environment_buffer_entry(char *x, int fd) {
@@ -231,6 +236,8 @@ static void tracked_fds_add(int fd) {
     }
 
     if (tracked_fds_list_count >= tracked_fds_list_space) {
+        int saved_errno = errno;
+
         size_t new_space = tracked_fds_list_space + TRACKFDS_REALLOC_STEP;
         int *tmp = realloc(tracked_fds_list,
                            sizeof(*tracked_fds_list) * new_space);
@@ -242,8 +249,11 @@ static void tracked_fds_add(int fd) {
             warning("realloc(tracked_fds_list, %zu) failed! [%d]\n",
                     sizeof(*tracked_fds_list) * new_space, getpid());
 #endif
+            errno = saved_errno;
             return;
         }
+        errno = saved_errno;
+
         tracked_fds_list = tmp;
         tracked_fds_list_space = new_space;
     }

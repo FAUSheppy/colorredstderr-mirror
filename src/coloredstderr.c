@@ -75,11 +75,15 @@ static int check_handle_fd(int fd) {
 
     /* Never touch anything not going to a terminal - unless we are explicitly
      * asked to do so. */
-    if (!force_write_to_non_tty && !isatty(fd)) {
-        return 0;
+    if (force_write_to_non_tty) {
+        return 1;
     }
 
-    return 1;
+    int saved_errno = errno;
+    int result = isatty(fd);
+    errno = saved_errno;
+
+    return result;
 }
 
 static void dup_fd(int oldfd, int newfd) {
@@ -141,29 +145,45 @@ inline static void init_pre_post_string(void) {
 }
 
 static void handle_fd_pre(int fd) {
+    int saved_errno = errno;
+
     if (!pre_string || !post_string) {
         init_pre_post_string();
     }
 
     DLSYM_FUNCTION(real_write, "write");
     real_write(fd, pre_string, pre_string_size);
+
+    errno = saved_errno;
 }
 static void handle_fd_post(int fd) {
+    int saved_errno = errno;
+
     /* write() already loaded above in handle_fd_pre(). */
     real_write(fd, post_string, post_string_size);
+
+    errno = saved_errno;
 }
 
 static void handle_file_pre(FILE *stream) {
+    int saved_errno = errno;
+
     if (!pre_string || !post_string) {
         init_pre_post_string();
     }
 
     DLSYM_FUNCTION(real_fwrite, "fwrite");
     real_fwrite(pre_string, pre_string_size, 1, stream);
+
+    errno = saved_errno;
 }
 static void handle_file_post(FILE *stream) {
+    int saved_errno = errno;
+
     /* fwrite() already loaded above in handle_file_pre(). */
     real_fwrite(post_string, post_string_size, 1, stream);
+
+    errno = saved_errno;
 }
 
 
@@ -303,9 +323,7 @@ int dup(int oldfd) {
 
     newfd = real_dup(oldfd);
     if (newfd != -1) {
-        int saved_errno = errno;
         dup_fd(oldfd, newfd);
-        errno = saved_errno;
     }
 
     return newfd;
@@ -315,9 +333,7 @@ int dup2(int oldfd, int newfd) {
 
     newfd = real_dup2(oldfd, newfd);
     if (newfd != -1) {
-        int saved_errno = errno;
         dup_fd(oldfd, newfd);
-        errno = saved_errno;
     }
 
     return newfd;
@@ -327,9 +343,7 @@ int dup3(int oldfd, int newfd, int flags) {
 
     newfd = real_dup3(oldfd, newfd, flags);
     if (newfd != -1) {
-        int saved_errno = errno;
         dup_fd(oldfd, newfd);
-        errno = saved_errno;
     }
 
     return newfd;
@@ -361,9 +375,7 @@ int fcntl(int fd, int cmd, ...) {
 
     /* We only care about duping fds. */
     if (cmd == F_DUPFD && result != -1) {
-        int saved_errno = errno;
         dup_fd(fd, result);
-        errno = saved_errno;
     }
 
     return result;
