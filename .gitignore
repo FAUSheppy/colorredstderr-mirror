@@ -10,7 +10,7 @@
 /config.status
 /configure
 /libtool
-/m4/
+/m4/*
 /src/.deps/
 /src/.libs/
 /src/Makefile
