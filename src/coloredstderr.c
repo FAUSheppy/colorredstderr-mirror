@@ -121,7 +121,7 @@ static size_t post_string_size;
 
 /* Load alternative pre/post strings from the environment if available, fall
  * back to default values. */
-inline static void init_pre_post_string(void) {
+static void init_pre_post_string(void) {
     pre_string = getenv(ENV_NAME_PRE_STRING);
     if (!pre_string) {
         pre_string = DEFAULT_PRE_STRING;
