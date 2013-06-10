@@ -135,6 +135,13 @@ static void init_pre_post_string(void) {
     post_string_size = strlen(post_string);
 }
 
+/* Don't inline any of the pre/post functions. Keep the hook function as small
+ * as possible for speed reasons. */
+static void handle_fd_pre(int fd) __noinline;
+static void handle_fd_post(int fd) __noinline;
+static void handle_file_pre(FILE *stream) __noinline;
+static void handle_file_post(FILE *stream) __noinline;
+
 static void handle_fd_pre(int fd) {
     int saved_errno = errno;
 
