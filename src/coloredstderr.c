@@ -140,9 +140,7 @@ inline static void init_pre_post_string(void) {
     post_string_size = strlen(post_string);
 }
 
-static void handle_fd_pre(int fd, int action) {
-    (void)action;
-
+static void handle_fd_pre(int fd) {
     if (!pre_string || !post_string) {
         init_pre_post_string();
     }
@@ -150,16 +148,12 @@ static void handle_fd_pre(int fd, int action) {
     DLSYM_FUNCTION(real_write, "write");
     real_write(fd, pre_string, pre_string_size);
 }
-static void handle_fd_post(int fd, int action) {
-    (void)action;
-
+static void handle_fd_post(int fd) {
     /* write() already loaded above in handle_fd_pre(). */
     real_write(fd, post_string, post_string_size);
 }
 
-static void handle_file_pre(FILE *stream, int action) {
-    (void)action;
-
+static void handle_file_pre(FILE *stream) {
     if (!pre_string || !post_string) {
         init_pre_post_string();
     }
@@ -167,9 +161,7 @@ static void handle_file_pre(FILE *stream, int action) {
     DLSYM_FUNCTION(real_fwrite, "fwrite");
     real_fwrite(pre_string, pre_string_size, 1, stream);
 }
-static void handle_file_post(FILE *stream, int action) {
-    (void)action;
-
+static void handle_file_post(FILE *stream) {
     /* fwrite() already loaded above in handle_file_pre(). */
     real_fwrite(post_string, post_string_size, 1, stream);
 }

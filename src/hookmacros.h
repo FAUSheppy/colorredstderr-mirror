@@ -35,7 +35,7 @@
         _HOOK_PRE(type, name) \
         handle = check_handle_fd(fd); \
         if (handle) { \
-            handle_fd_pre(fd, handle); \
+            handle_fd_pre(fd); \
         } \
         errno = saved_errno;
 #define _HOOK_PRE_FILE(type, name, file) \
@@ -43,7 +43,7 @@
         _HOOK_PRE(type, name) \
         handle = check_handle_fd(fileno(file)); \
         if (handle) { \
-            handle_file_pre(file, handle); \
+            handle_file_pre(file); \
         } \
         errno = saved_errno;
 /* Save and restore the errno to make sure we return the errno of the original
@@ -51,7 +51,7 @@
 #define _HOOK_POST_FD_(fd) \
         if (handle) { \
             saved_errno = errno; \
-            handle_fd_post(fd, handle); \
+            handle_fd_post(fd); \
             errno = saved_errno; \
         }
 #define _HOOK_POST_FD(fd) \
@@ -60,7 +60,7 @@
 #define _HOOK_POST_FILE(file) \
         if (handle) { \
             saved_errno = errno; \
-            handle_file_post(file, handle); \
+            handle_file_post(file); \
             errno = saved_errno; \
         } \
         return result;
