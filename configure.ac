@@ -47,6 +47,14 @@ AC_C_INLINE
 AC_FUNC_FORK
 AC_CHECK_FUNCS([dup2 memmove setenv strdup])
 
+dnl Thanks to gperftools' configure.ac (https://code.google.com/p/gperftools).
+AC_MSG_CHECKING([for __builtin_expect])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([],[return __builtin_expect(main != 0, 1)])],
+               [AC_DEFINE([HAVE___BUILTIN_EXPECT], 1,
+                          [Define to 1 if the compiler supports __builtin_expect().])
+                AC_MSG_RESULT([yes])],
+               [AC_MSG_RESULT([no])])
+
 AC_SEARCH_LIBS([dlsym], [dl], [], [AC_MSG_ERROR([dlsym() is required])])
 
 AC_ARG_ENABLE([debug],

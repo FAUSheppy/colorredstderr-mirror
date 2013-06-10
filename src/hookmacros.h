@@ -56,10 +56,10 @@
 
 #define _HOOK_PRE(type, name) \
         int handle; \
-        if (!(real_ ## name )) { \
+        if (unlikely(!(real_ ## name ))) { \
             *(void **) (&(real_ ## name)) = dlsym_function(#name); \
             /* Initialize our data while we're at it. */ \
-            if (!initialized) { \
+            if (unlikely(!initialized)) { \
                 init_from_environment(); \
             } \
         }
@@ -68,8 +68,8 @@
         _HOOK_PRE_FD_(type, name, fd)
 #define _HOOK_PRE_FD_(type, name, fd) \
         _HOOK_PRE(type, name) \
-        if (tracked_fds_find(fd)) { \
-            if (force_write_to_non_tty) { \
+        if (unlikely(tracked_fds_find(fd))) { \
+            if (unlikely(force_write_to_non_tty)) { \
                 handle = 1; \
             } else { \
                 handle = isatty(fd); \
@@ -77,14 +77,14 @@
         } else { \
             handle = 0; \
         } \
-        if (handle) { \
+        if (unlikely(handle)) { \
             handle_fd_pre(fd); \
         }
 #define _HOOK_PRE_FILE(type, name, file) \
         type result; \
         _HOOK_PRE(type, name) \
-        if (tracked_fds_find(fileno(file))) { \
-            if (force_write_to_non_tty) { \
+        if (unlikely(tracked_fds_find(fileno(file)))) { \
+            if (unlikely(force_write_to_non_tty)) { \
                 handle = 1; \
             } else { \
                 handle = isatty(fileno(file)); \
@@ -92,18 +92,18 @@
         } else { \
             handle = 0; \
         } \
-        if (handle) { \
+        if (unlikely(handle)) { \
             handle_file_pre(file); \
         }
 #define _HOOK_POST_FD_(fd) \
-        if (handle) { \
+        if (unlikely(handle)) { \
             handle_fd_post(fd); \
         }
 #define _HOOK_POST_FD(fd) \
         _HOOK_POST_FD_(fd) \
         return result;
 #define _HOOK_POST_FILE(file) \
-        if (handle) { \
+        if (unlikely(handle)) { \
             handle_file_post(file); \
         } \
         return result;

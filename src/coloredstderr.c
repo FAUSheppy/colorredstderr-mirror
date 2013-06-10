@@ -51,6 +51,7 @@ static int force_write_to_non_tty;
 
 
 #include "constants.h"
+#include "compiler.h"
 #ifdef DEBUG
 # include "debug.h"
 #endif
@@ -68,7 +69,7 @@ static void dup_fd(int oldfd, int newfd) {
     debug("%3d -> %3d\t\t\t[%d]\n", oldfd, newfd, getpid());
 #endif
 
-    if (!initialized) {
+    if (unlikely(!initialized)) {
         init_from_environment();
     }
 
@@ -90,7 +91,7 @@ static void close_fd(int fd) {
     debug("%3d ->   .\t\t\t[%d]\n", fd, getpid());
 #endif
 
-    if (!initialized) {
+    if (unlikely(!initialized)) {
         init_from_environment();
     }
 
@@ -124,7 +125,7 @@ inline static void init_pre_post_string(void) {
 static void handle_fd_pre(int fd) {
     int saved_errno = errno;
 
-    if (!pre_string || !post_string) {
+    if (unlikely(!pre_string || !post_string)) {
         init_pre_post_string();
     }
 
@@ -145,7 +146,7 @@ static void handle_fd_post(int fd) {
 static void handle_file_pre(FILE *stream) {
     int saved_errno = errno;
 
-    if (!pre_string || !post_string) {
+    if (unlikely(!pre_string || !post_string)) {
         init_pre_post_string();
     }
 
