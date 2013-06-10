@@ -46,7 +46,7 @@ AC_C_INLINE
 AX_C___ATTRIBUTE__
 
 AC_FUNC_FORK
-AC_CHECK_FUNCS([dup2 memmove setenv strdup])
+AC_CHECK_FUNCS([memmove setenv])
 
 dnl Thanks to gperftools' configure.ac (https://code.google.com/p/gperftools).
 AC_MSG_CHECKING([for __builtin_expect])
