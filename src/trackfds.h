@@ -299,10 +299,25 @@ static int tracked_fds_remove(int fd) {
     /* Not found. */
     return 0;
 }
+
+static int tracked_fds_find_slow(int fd);
+/*
+ * tracked_fds_find() is called for each hook call and should be as fast as
+ * possible. As most file descriptors are < TRACKFDS_STATIC_COUNT, force the
+ * compiler to inline that part which is almost exclusively used.
+ *
+ * Inlining tracked_fds_add()/tracked_fds_remove() isn't worth the effort as
+ * they are not called often enough.
+ */
+inline static int tracked_fds_find(int fd) __always_inline;
 static int tracked_fds_find(int fd) {
     if (fd < TRACKFDS_STATIC_COUNT) {
         return tracked_fds[fd];
     }
+
+    return tracked_fds_find_slow(fd);
+}
+static int tracked_fds_find_slow(int fd) {
     if (tracked_fds_list_count == 0) {
         return 0;
     }

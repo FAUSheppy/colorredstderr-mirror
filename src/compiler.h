@@ -20,6 +20,17 @@
 #ifndef COMPILER_H
 #define COMPILER_H 1
 
+/* Prevent/force inlining. Used to improve performance. */
+#undef __noinline
+#undef __always_inline
+#ifdef HAVE___ATTRIBUTE__
+# define __noinline      __attribute__((noinline))
+# define __always_inline __attribute__((always_inline))
+#else
+# define __noinline
+# define __always_inline
+#endif
+
 /* Branch prediction information for the compiler. */
 #ifdef HAVE___BUILTIN_EXPECT
 # define likely(x)   __builtin_expect(!!(x), 1)

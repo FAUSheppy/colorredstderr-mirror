@@ -43,6 +43,7 @@ AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
 
 AC_C_INLINE
+AX_C___ATTRIBUTE__
 
 AC_FUNC_FORK
 AC_CHECK_FUNCS([dup2 memmove setenv strdup])
