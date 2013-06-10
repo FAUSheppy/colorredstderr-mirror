@@ -24,9 +24,11 @@
 #ifdef HAVE___ATTRIBUTE__
 # define noinline      __attribute__((noinline))
 # define always_inline __attribute__((always_inline))
+# define unused        __attribute__((unused))
 #else
 # define noinline
 # define always_inline
+# define unused
 #endif
 
 /* Branch prediction information for the compiler. */

@@ -17,12 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-int main(int argc, char **argv) {
+#include "../src/compiler.h"
+
+
+int main(int argc unused, char **argv unused) {
     pid_t pid;
 
     fprintf(stderr, "Before vfork().\n");

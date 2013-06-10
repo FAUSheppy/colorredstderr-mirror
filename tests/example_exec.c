@@ -17,10 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "../src/compiler.h"
 
 
 #define MAGIC "@RUN_"
@@ -75,7 +79,7 @@ static void dump(char *argv[]) {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc unused, char **argv) {
     char argv0[strlen(argv[0]) + MAGIC_LENGTH + 3 + 1];
 
     char *old_ldpreload = getenv("LD_PRELOAD");

@@ -17,11 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #define _GNU_SOURCE /* for program_invocation_name */
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <error.h>
+
+#include "../src/compiler.h"
+
 
 void (*error_print_progname)(void);
 
@@ -31,7 +36,7 @@ static void print_prognmae(void) {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc unused, char **argv unused) {
     program_invocation_name = "./example_error";
 
     error(0, 0, "<message>");

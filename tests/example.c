@@ -17,15 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 
+#include "../src/compiler.h"
 
-int main(int argc, char **argv) {
-    (void)argv;
 
+int main(int argc, char **argv unused) {
     fprintf(stderr, "write to stderr: %d\n", argc);
     printf("write to stdout\n");
     fflush(stdout);
