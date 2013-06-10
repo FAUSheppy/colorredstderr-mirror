@@ -1,12 +1,15 @@
 TESTS = run.sh
-check_PROGRAMS = example example_exec example_vfork
+check_PROGRAMS = example example_exec
 example_SOURCES = example.c
 example_exec_SOURCES = example_exec.c
-example_vfork_SOURCES = example_vfork.c
 
 if HAVE_ERROR_H
     check_PROGRAMS += example_error
     example_error_SOURCES = example_error.c
+endif
+if HAVE_VFORK
+    check_PROGRAMS += example_vfork
+    example_vfork_SOURCES = example_vfork.c
 endif
 
 dist_check_SCRIPTS = run.sh lib.sh

@@ -66,6 +66,7 @@ AC_ARG_ENABLE([debug],
 
 dnl Used in tests/Makefile.am to build the test only if error() is available.
 AM_CONDITIONAL([HAVE_ERROR_H],[test "x$ac_cv_header_error_h" = xyes])
+AM_CONDITIONAL([HAVE_VFORK],[test "x$ac_cv_func_vfork_works" = xyes])
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 AC_OUTPUT
