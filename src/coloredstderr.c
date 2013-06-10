@@ -64,6 +64,19 @@ static int force_write_to_non_tty;
 /* See hookmacros.h for the decision if a function call is colored. */
 
 
+/* Prevent inlining into hook functions because it may increase the number of
+ * spilled registers unnecessarily. As it's not called very often accept the
+ * additional call. */
+static int isatty_noinline(int fd) __noinline;
+static int isatty_noinline(int fd) {
+    int saved_errno = errno;
+    int result = isatty(fd);
+    errno = saved_errno;
+
+    return result;
+}
+
+
 static void dup_fd(int oldfd, int newfd) {
 #ifdef DEBUG
     debug("%3d -> %3d\t\t\t[%d]\n", oldfd, newfd, getpid());

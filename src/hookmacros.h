@@ -38,7 +38,7 @@
  *         if (force_write_to_non_tty) {
  *             handle = 1;
  *         } else {
- *             handle = isatty(<fd>);
+ *             handle = isatty_noinline(<fd>);
  *         }
  *     } else {
  *         handle = 0;
@@ -72,7 +72,7 @@
             if (unlikely(force_write_to_non_tty)) { \
                 handle = 1; \
             } else { \
-                handle = isatty(fd); \
+                handle = isatty_noinline(fd); \
             } \
         } else { \
             handle = 0; \
@@ -87,7 +87,7 @@
             if (unlikely(force_write_to_non_tty)) { \
                 handle = 1; \
             } else { \
-                handle = isatty(fileno(file)); \
+                handle = isatty_noinline(fileno(file)); \
             } \
         } else { \
             handle = 0; \
