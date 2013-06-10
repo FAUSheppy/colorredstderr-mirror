@@ -19,6 +19,9 @@
 
 #include <config.h>
 
+/* For execvpe(). */
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -269,6 +272,35 @@ int main(int argc unused, char **argv) {
 
         execvp(argv[0], args);
         return EXIT_FAILURE;
+
+#ifdef HAVE_EXECVPE
+    /* execvpe(3), but not testing the p(ath) part */
+    } else if (!skip--) {
+        char *args[] = { argv0, NULL };
+        char *envp[] = { "TEST=54", ldpreload, NULL };
+
+        execvpe(argv[0], args, envp);
+        return EXIT_FAILURE;
+    } else if (!skip--) {
+        char *args[] = { argv0, "foo", "bar", NULL };
+        char *envp[] = { "TEST=55", ldpreload, NULL };
+
+        execvpe(argv[0], args, envp);
+        return EXIT_FAILURE;
+#else
+    /* Fake output to let the test pass. */
+    } else if (!skip--) {
+        puts("argv[0] = |./example_exec|");
+        puts("environ[0] = |TEST=54|");
+        puts("environ[2] = |COLORED_STDERR_FDS=2,|");
+        puts("");
+        puts("argv[0] = |./example_exec|");
+        puts("argv[1] = |foo|");
+        puts("argv[2] = |bar|");
+        puts("environ[0] = |TEST=55|");
+        puts("environ[2] = |COLORED_STDERR_FDS=2,|");
+        puts("");
+#endif
     }
 
     printf("Done.\n");

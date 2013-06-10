@@ -536,3 +536,13 @@ int execvp(char const *file, char * const argv[]) {
     update_environment();
     return real_execvp(file, argv);
 }
+
+#ifdef HAVE_EXECVPE
+extern char **environ;
+int execvpe(char const *file, char * const argv[], char * const envp[]) {
+    /* Fake the environment so we can reuse execvp(). */
+    environ = (char **)envp;
+
+    return execvp(file, argv);
+}
+#endif

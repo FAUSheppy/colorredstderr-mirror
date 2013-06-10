@@ -101,4 +101,14 @@ environ[0] = |TEST=53|
 environ[1] = |FOO=|
 environ[3] = |COLORED_STDERR_FDS=2,|
 
+argv[0] = |./example_exec|
+environ[0] = |TEST=54|
+environ[2] = |COLORED_STDERR_FDS=2,|
+
+argv[0] = |./example_exec|
+argv[1] = |foo|
+argv[2] = |bar|
+environ[0] = |TEST=55|
+environ[2] = |COLORED_STDERR_FDS=2,|
+
 Done.

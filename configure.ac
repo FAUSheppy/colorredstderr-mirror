@@ -48,6 +48,7 @@ AX_C___ATTRIBUTE__
 AC_FUNC_FORK
 AC_CHECK_FUNCS([memmove setenv],
                [],[AC_MSG_ERROR([function is required])])
+AC_CHECK_FUNCS([execvpe])
 
 dnl Thanks to gperftools' configure.ac (https://code.google.com/p/gperftools).
 AC_MSG_CHECKING([for __builtin_expect])
