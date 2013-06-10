@@ -95,6 +95,9 @@ static void init_from_environment(void) {
         errno = saved_errno;
         return;
     }
+#ifdef DEBUG
+    debug("  getenv(\"%s\"): \"%s\"\n", ENV_NAME_FDS, env);
+#endif
     /* Environment is read-only. */
     char env_copy[strlen(env) + 1];
     strcpy(env_copy, env);
@@ -217,7 +220,7 @@ static void update_environment(void) {
     update_environment_buffer(env);
 
 #if 0
-    debug("    setenv('%s', '%s', 1)\n", ENV_NAME_FDS, env);
+    debug("    setenv(\"%s\", \"%s\", 1)\n", ENV_NAME_FDS, env);
 #endif
 
     setenv(ENV_NAME_FDS, env, 1 /* overwrite */);
