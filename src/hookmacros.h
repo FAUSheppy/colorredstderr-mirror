@@ -22,24 +22,76 @@
 
 /* Hook the function by creating a function with the same name. With
  * LD_PRELOAD our function will be preferred. The original function is stored
- * in a static variable (real_*). */
+ * in a static variable (real_*). Any function called in these macros must
+ * make sure to restore the errno if it changes it.
+ *
+ * "Pseudo code" for the following macros. <name> is the name of the hooked
+ * function, <fd> is either a file descriptor or a FILE pointer.
+ *
+ *     if (!real_<name>) {
+ *         real_<name> = dlsym_function(<name>);
+ *         if (!initialized) {
+ *             init_from_environment();
+ *         }
+ *     }
+ *     if (tracked_fds_find(<fd>)) {
+ *         if (force_write_to_non_tty) {
+ *             handle = 1;
+ *         } else {
+ *             handle = isatty(<fd>);
+ *         }
+ *     } else {
+ *         handle = 0;
+ *     }
+ *
+ *     if (handle) {
+ *         handle_<fd>_pre(<fd>);
+ *     }
+ *     <type> result = real_<name>(<args>);
+ *     if (handle) {
+ *         handle_<fd>_post(<fd>);
+ *     }
+ *     return result;
+ */
 
 #define _HOOK_PRE(type, name) \
         int handle; \
-        DLSYM_FUNCTION(real_ ## name, #name);
+        if (!(real_ ## name )) { \
+            *(void **) (&(real_ ## name)) = dlsym_function(#name); \
+            /* Initialize our data while we're at it. */ \
+            if (!initialized) { \
+                init_from_environment(); \
+            } \
+        }
 #define _HOOK_PRE_FD(type, name, fd) \
         type result; \
         _HOOK_PRE_FD_(type, name, fd)
 #define _HOOK_PRE_FD_(type, name, fd) \
         _HOOK_PRE(type, name) \
-        handle = check_handle_fd(fd); \
+        if (tracked_fds_find(fd)) { \
+            if (force_write_to_non_tty) { \
+                handle = 1; \
+            } else { \
+                handle = isatty(fd); \
+            } \
+        } else { \
+            handle = 0; \
+        } \
         if (handle) { \
             handle_fd_pre(fd); \
         }
 #define _HOOK_PRE_FILE(type, name, file) \
         type result; \
         _HOOK_PRE(type, name) \
-        handle = check_handle_fd(fileno(file)); \
+        if (tracked_fds_find(fileno(file))) { \
+            if (force_write_to_non_tty) { \
+                handle = 1; \
+            } else { \
+                handle = isatty(fileno(file)); \
+            } \
+        } else { \
+            handle = 0; \
+        } \
         if (handle) { \
             handle_file_pre(file); \
         }

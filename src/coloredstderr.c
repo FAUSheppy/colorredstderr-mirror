@@ -60,31 +60,8 @@ static int force_write_to_non_tty;
 
 
 
-/* Should the "action" handler be invoked for this file descriptor? */
-static int check_handle_fd(int fd) {
-    /* Load state from environment. Only necessary once per process. */
-    if (!initialized) {
-        init_from_environment();
-    }
+/* See hookmacros.h for the decision if a function call is colored. */
 
-    /* tracked_fds_find() is most likely faster than calling isatty(),
-     * therefore check if we are tracking this file descriptor first. */
-    if (!tracked_fds_find(fd)) {
-        return 0;
-    }
-
-    /* Never touch anything not going to a terminal - unless we are explicitly
-     * asked to do so. */
-    if (force_write_to_non_tty) {
-        return 1;
-    }
-
-    int saved_errno = errno;
-    int result = isatty(fd);
-    errno = saved_errno;
-
-    return result;
-}
 
 static void dup_fd(int oldfd, int newfd) {
 #ifdef DEBUG
