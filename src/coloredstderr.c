@@ -243,9 +243,9 @@ HOOK_VOID1(void, perror, STDERR_FILENO,
 
 /* error(3) */
 #ifdef HAVE_ERROR_H
-static void  error_vararg(int status, int errnum,
-                   char const *filename, unsigned int linenum,
-                   char const *format, va_list ap) {
+static void error_vararg(int status, int errnum,
+                         char const *filename, unsigned int linenum,
+                         char const *format, va_list ap) {
     static char const *last_filename;
     static unsigned int last_linenum;
 
