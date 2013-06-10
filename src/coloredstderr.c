@@ -530,9 +530,9 @@ int execv(char const *path, char * const argv[]) {
 }
 
 static int (*real_execvp)(char const *path, char * const argv[]);
-int execvp(char const *path, char * const argv[]) {
+int execvp(char const *file, char * const argv[]) {
     DLSYM_FUNCTION(real_execvp, "execvp");
 
     update_environment();
-    return real_execvp(path, argv);
+    return real_execvp(file, argv);
 }
