@@ -61,12 +61,12 @@ AC_SEARCH_LIBS([dlsym], [dl], [], [AC_MSG_ERROR([dlsym() is required])])
 AC_ARG_ENABLE([warnings],
               [AS_HELP_STRING([--enable-warnings],[enable warning output])],
               [if test "x$enableval" = xyes; then
-                   AC_DEFINE([WARNING], 1, [Define to enable warning output.])
+                   AC_DEFINE([WARNING], 1, [Define to 1 enable warning output.])
                fi])
 AC_ARG_ENABLE([debug],
               [AS_HELP_STRING([--enable-debug],[enable debug output])],
               [if test "x$enableval" = xyes; then
-                   AC_DEFINE([DEBUG], 1, [Define to enable debug output.])
+                   AC_DEFINE([DEBUG], 1, [Define to 1 enable debug output.])
                    dnl DEBUG implies WARNING
                    AC_DEFINE([WARNING], 1)
                fi])
