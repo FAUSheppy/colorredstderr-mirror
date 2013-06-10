@@ -21,6 +21,14 @@
 set -e
 
 
+# The tests fail if running under coloredstderr because the tests redirect
+# stderr to stdout which is detected by coloredstderr :D (and not colored as a
+# result). Therefore remove LD_PRELOAD and re-exec the test.
+if test -n "$LD_PRELOAD"; then
+    unset LD_PRELOAD
+    exec "$0"
+fi
+
 test "x$srcdir" = x && srcdir=.
 . "$srcdir/lib.sh"
 
