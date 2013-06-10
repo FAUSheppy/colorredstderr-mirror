@@ -53,7 +53,7 @@ static int force_write_to_non_tty;
 
 
 #include "constants.h"
-#ifdef DEBUG
+#ifdef WARNING
 # include "debug.h"
 #endif
 

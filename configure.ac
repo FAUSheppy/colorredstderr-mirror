@@ -58,10 +58,17 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([],[return __builtin_expect(main != 0, 1)])],
 
 AC_SEARCH_LIBS([dlsym], [dl], [], [AC_MSG_ERROR([dlsym() is required])])
 
+AC_ARG_ENABLE([warnings],
+              [AS_HELP_STRING([--enable-warnings],[enable warning output])],
+              [if test "x$enableval" = xyes; then
+                   AC_DEFINE([WARNING], 1, [Define to enable warning output.])
+               fi])
 AC_ARG_ENABLE([debug],
               [AS_HELP_STRING([--enable-debug],[enable debug output])],
               [if test "x$enableval" = xyes; then
                    AC_DEFINE([DEBUG], 1, [Define to enable debug output.])
+                   dnl DEBUG implies WARNING
+                   AC_DEFINE([WARNING], 1)
                fi])
 
 dnl Used in tests/Makefile.am to build the test only if error() is available.

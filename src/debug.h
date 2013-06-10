@@ -41,6 +41,7 @@ static void debug_write(int fd, int first_call, char const *format, va_list ap) 
     real_close(fd);
 }
 
+#ifdef DEBUG
 static void debug(char const *format, ...) {
     va_list ap;
 
@@ -63,6 +64,7 @@ static void debug(char const *format, ...) {
 
     errno = saved_errno;
 }
+#endif
 
 static void warning(char const *format, ...) {
     va_list ap;
