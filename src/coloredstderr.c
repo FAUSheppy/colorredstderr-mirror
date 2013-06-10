@@ -38,6 +38,11 @@
 
 /* Conflicting declaration in glibc. */
 #undef fwrite_unlocked
+/* These functions may be macros when compiling with hardening flags (fortify)
+ * which cause build failures when used in our hook macros below. Observed
+ * with Clang on Debian Wheezy. */
+#undef printf
+#undef fprintf
 
 
 /* Used by various functions, including debug(). */
