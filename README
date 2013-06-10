@@ -1,0 +1,120 @@
+README
+======
+
+coloredstderr is a small library which uses 'LD_PRELOAD' to color stderr.
+
+
+Like all solutions using 'LD_PRELOAD' it only works with dynamically linked
+binaries. Statically linked binaries, for example valgrind, are not supported.
+
+
+It was inspired by stderred [2]. Similar solutions (using 'LD_PRELOAD')
+include:
+
+- stderred [1], but doesn't `follow' dups (I somehow missed it when looking
+  for existing implementations)
+- stderred [2], but only hooks `write()`
+
+[1]: https://github.com/sickill/stderred
+[2]: https://github.com/trapd00r/stderred
+
+Most other existing solutions use a second process which colors its input and
+pipe stderr to it. However this creates different runtime behaviour resulting
+in a different ordering of the output. Partial lines (no newline) also often
+cause problems.
+
+
+DEPENDENCIES
+------------
+
+- C99 compiler (variable length arrays)
+- dynamic linker/loader which supports 'LD_PRELOAD' (e.g. GNU/Linux's ld.so)
+
+
+USAGE
+-----
+
+Set 'LD_PRELOAD' to include the _absolute_ path to `libcoloredstderr.so`:
+
+    LD_PRELOAD=/absolute/path/to/libcoloredstderr.so
+
+The 'COLORED_STDERR_FDS' environment variable must be set to the file
+descriptors which should be colored (comma separated list). Normally this is
+just 2 (stderr):
+
+    COLORED_STDERR_FDS=2,
+
+The trailing comma is important!
+
+
+A default setup could look like this:
+
+    LD_PRELOAD="$HOME/bin/libcoloredstderr.so"
+    COLORED_STDERR_FDS=2,
+    export LD_PRELOAD COLORED_STDERR_FDS
+
+
+The following additional environment variables are available:
+
+- 'COLORED_STDERR_PRE'
+  String to write before each write to stderr, defaults to "\033[91m" (bright
+  red).
+- 'COLORED_STDERR_POST'
+  String to write after each write to stderr, defaults to "\033[0m" (reset
+  color).
+- 'COLORED_STDERR_FORCE_WRITE'
+  If set to an non-empty value add pre/post strings even when not writing to a
+  terminal, e.g. when writing to a file. By default, only writes to a terminal
+  are colored.
+
+
+DEBUG
+-----
+
+To enable debug mode, configure coloredstderr with '--enable-debug'.
+
+Debug mode is slower than normal mode. To log only warnings without the
+overhead of debug mode use '--enable-warnings'.
+
+Debug messages are written to the file `colored_stderr_debug_log.txt` in the
+current working directory _if_ it exists. If it exists debug messages are
+appended. Be careful, this file might grow very quickly.
+
+*Important:* Warnings are written to `$HOME/colored_stderr_warning_log.txt`
+even if it _does not_ exist (only if debug or warning mode is enabled)! If it
+doesn't exist it's created. An existing file isn't overwritten, but the
+warnings are appended at the end.
+
+
+BUGS
+----
+
+If you find any bugs not mentioned in this document please report them to
+<simon@ruderich.org> with coloredstderr in the subject.
+
+
+AUTHORS
+-------
+
+Written by Simon Ruderich <simon@ruderich.org>.
+
+
+LICENSE
+-------
+
+coloredstderr is licensed under GPL version 3 or later.
+
+Copyright (C) 2013  Simon Ruderich
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
