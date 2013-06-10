@@ -21,14 +21,12 @@
 #define COMPILER_H 1
 
 /* Prevent/force inlining. Used to improve performance. */
-#undef __noinline
-#undef __always_inline
 #ifdef HAVE___ATTRIBUTE__
-# define __noinline      __attribute__((noinline))
-# define __always_inline __attribute__((always_inline))
+# define noinline      __attribute__((noinline))
+# define always_inline __attribute__((always_inline))
 #else
-# define __noinline
-# define __always_inline
+# define noinline
+# define always_inline
 #endif
 
 /* Branch prediction information for the compiler. */

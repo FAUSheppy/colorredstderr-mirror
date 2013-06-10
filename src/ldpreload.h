@@ -30,12 +30,7 @@
 #include <dlfcn.h>
 #include <errno.h>
 
-static void *dlsym_function(char const *name)
-#ifdef HAVE___ATTRIBUTE__
-                                              __attribute__((noinline))
-#endif
-;
-
+static void *dlsym_function(char const *name) noinline;
 /* Load the function name using dlsym() and return it. Terminate program on
  * failure. Split in function and macro to reduce code inserted into the
  * function using the macro. */
