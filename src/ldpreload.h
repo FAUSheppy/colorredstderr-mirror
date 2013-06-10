@@ -28,24 +28,32 @@
 #include <stdlib.h>
 /* dlsym() */
 #include <dlfcn.h>
+#include <errno.h>
 
+/* Load the function name using dlsym() and return it. Terminate program on
+ * failure. Split in function and macro to reduce code inserted into the
+ * function using the macro. */
+static void *dlsym_function(char const *name) {
+    void *result;
 
-/* Load the function name using dlsym() if necessary and store it in pointer.
- * Terminate program on failure. */
+    int saved_errno = errno; /* just in case */
+
+    /* Clear possibly existing error. */
+    dlerror();
+    result = dlsym(RTLD_NEXT, name);
+    /* Not much we can do. Most likely the other output functions failed to
+     * load too. */
+    if (dlerror() != NULL) {
+        abort();
+    }
+
+    errno = saved_errno;
+    return result;
+}
+
 #define DLSYM_FUNCTION(pointer, name) \
-    if (NULL == (pointer)) { \
-        int saved_errnox = errno; \
-        char *error; \
-        dlerror(); /* Clear possibly existing error. */ \
-        \
-        *(void **) (&(pointer)) = dlsym(RTLD_NEXT, (name)); \
-        \
-        if (NULL != (error = dlerror())) { \
-            /* Not much we can do. Most likely the other output functions \
-             * failed to load too. */ \
-            abort(); \
-        } \
-        errno = saved_errnox; \
+    if (!(pointer)) { \
+        *(void **) (&(pointer)) = dlsym_function(name); \
     }
 
 #endif
