@@ -15,13 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+set -e
+
 
 # Allow running the script directly without running `make check`.
 test "x$builddir" = x && builddir=.
 test "x$EGREP" = x && EGREP='grep -E'
 
-# In case we are called with LD_PRELOAD already set.
-unset LD_PRELOAD
+# The tests fail if running under coloredstderr because the tests redirect
+# stderr to stdout which is detected by coloredstderr :D (and not colored as a
+# result). Therefore remove LD_PRELOAD and re-exec the test.
+if test -n "$LD_PRELOAD"; then
+    unset LD_PRELOAD
+    exec "$0"
+fi
+
+# Use valgrind to run the tests if it's available.
+valgrind_cmd=
+if type valgrind >/dev/null 2>&1; then
+    valgrind_cmd='valgrind --quiet --error-exitcode=1'
+fi
+
 # Clean locale for reproducible tests.
 LC_ALL=C
 unset LANGUAGE
@@ -56,6 +70,8 @@ run_test() {
     shift
     shift
 
+    output="output-$$"
+
     (
         # Standard setup.
         LD_PRELOAD="$library"
@@ -74,12 +90,12 @@ run_test() {
             export COLORED_STDERR_FORCE_WRITE
         fi
 
-        $valgrind_cmd "$@" "$testcase" > output 2>&1
+        $valgrind_cmd "$@" "$testcase" > "$output" 2>&1
     )
 
-    diff -u "$expected" output \
+    diff -u "$expected" "$output" \
         || die 'failed!'
-    rm output
+    rm "$output"
     echo 'passed.'
 }
 
