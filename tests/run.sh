@@ -42,18 +42,18 @@ fi
 
 # Make sure we don't write to non-ttys by default.
 force_write=
-test_script example-noforce.sh
+test_script example_noforce.sh
 force_write=1
 
-test_script example-simple.sh
-test_script example-redirects.sh
+test_script example_simple.sh
+test_script example_redirects.sh
 test_program example
 test_program example_exec
 test -x "$builddir/example_vfork" && test_program example_vfork
 test -x "$builddir/example_error" && test_program example_error
 
-test_script_subshell example-simple.sh
-test_script_subshell example-redirects.sh
+test_script_subshell example_simple.sh
+test_script_subshell example_redirects.sh
 test_program_subshell example
 test_program_subshell example_exec
 test -x "$builddir/example_vfork" && test_program_subshell example_vfork

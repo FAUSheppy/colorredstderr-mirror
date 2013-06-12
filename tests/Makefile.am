@@ -17,12 +17,12 @@ dist_check_DATA = example.expected \
                   example_error.expected \
                   example_exec.expected \
                   example_vfork.expected \
-                  example-noforce.sh \
-                  example-noforce.sh.expected \
-                  example-redirects.sh \
-                  example-redirects.sh.expected \
-                  example-simple.sh \
-                  example-simple.sh.expected
+                  example_noforce.sh \
+                  example_noforce.sh.expected \
+                  example_redirects.sh \
+                  example_redirects.sh.expected \
+                  example_simple.sh \
+                  example_simple.sh.expected
 
 # Used by run.sh.
 export EGREP
