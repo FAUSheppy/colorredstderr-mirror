@@ -176,8 +176,7 @@
     }
 #define HOOK_VAR_FILE3(type, name, file, func, type1, arg1, type2, arg2, type3, arg3) \
     static type (*real_ ## func)(type1, type2, type3, va_list); \
-    type name(type1 arg1, type2 arg2, type3 arg3, ...) \
-    { \
+    type name(type1 arg1, type2 arg2, type3 arg3, ...) { \
         va_list ap; \
         _HOOK_PRE_FILE(type, func, file) \
         va_start(ap, arg3); \
