@@ -531,23 +531,24 @@ int execve(char const *filename, char * const argv[], char * const env[]) {
 int execl(char const *path, char const *arg, ...) {
     EXECL_COPY_VARARGS(args);
 
-    update_environment();
+    /* execv() updates the environment. */
     return execv(path, args);
 }
-
 int execlp(char const *file, char const *arg, ...) {
     EXECL_COPY_VARARGS(args);
 
-    update_environment();
+    /* execvp() updates the environment. */
     return execvp(file, args);
 }
-
 int execle(char const *path, char const *arg, ... /*, char * const envp[] */) {
+    char * const *envp;
+
     EXECL_COPY_VARARGS_START(args);
     /* Get envp[] located after arguments. */
-    char * const *envp = va_arg(ap, char * const *);
+    envp = va_arg(ap, char * const *);
     EXECL_COPY_VARARGS_END(args);
 
+    /* execve() updates the environment. */
     return execve(path, args, envp);
 }
 
@@ -573,6 +574,7 @@ int execvpe(char const *file, char * const argv[], char * const envp[]) {
     /* Fake the environment so we can reuse execvp(). */
     environ = (char **)envp;
 
+    /* execvp() updates the environment. */
     return execvp(file, argv);
 }
 #endif
