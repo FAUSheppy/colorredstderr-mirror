@@ -124,8 +124,7 @@ static void init_from_environment(void) {
         }
         /* ',' at the beginning or double ',' - ignore. */
         if (x == last) {
-            last = x + 1;
-            continue;
+            goto next;
         }
 
         if (i == count) {
