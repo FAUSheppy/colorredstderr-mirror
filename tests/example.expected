@@ -6,3 +6,4 @@
 >STDERR>more on stderr
 <STDERR<>STDERR>stderr ...
 <STDERR<more on stdout
+>STDERR>x<STDERR<

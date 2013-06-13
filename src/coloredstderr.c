@@ -35,6 +35,9 @@
 #ifdef HAVE_ERROR_H
 # include <error.h>
 #endif
+#ifdef HAVE_STRUCT__IO_FILE__FILENO
+# include <libio.h>
+#endif
 
 /* Conflicting declaration in glibc. */
 #undef fwrite_unlocked
@@ -241,6 +244,10 @@ HOOK_FILE2(int, putc_unlocked, stream,
            int, c, FILE *, stream)
 HOOK_FILE1(int, putchar_unlocked, stdout,
            int, c)
+/* glibc defines (_IO_)putc_unlocked() to __overflow() in some cases. */
+#ifdef HAVE_STRUCT__IO_FILE__FILENO
+HOOK_FD2(int, __overflow, f->_fileno, _IO_FILE *, f, int, ch)
+#endif
 
 /* perror(3) */
 HOOK_VOID1(void, perror, STDERR_FILENO,

@@ -52,5 +52,9 @@ int main(int argc, char **argv unused) {
     write(42, "stderr ...\n", 11);
     write(471, "more on stdout\n", 15);
 
+    /* Glibc uses __overflow() for this ... */
+    putc_unlocked('x', stderr);
+    putc_unlocked('\n', stdout);
+
     return EXIT_SUCCESS;
 }

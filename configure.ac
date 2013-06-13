@@ -47,6 +47,11 @@ AC_TYPE_SSIZE_T
 AC_C_INLINE
 AX_C___ATTRIBUTE__
 
+AC_CHECK_MEMBER([struct _IO_FILE._fileno],
+                [AC_DEFINE([HAVE_STRUCT__IO_FILE__FILENO], 1,
+                           [Define to 1 if `_fileno' is a member of `struct _IO_FILE'.])],
+                [],[[#include <libio.h>]])
+
 AC_FUNC_FORK
 AC_CHECK_FUNCS([memmove setenv],
                [],[AC_MSG_ERROR([function is required])])
