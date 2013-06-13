@@ -507,14 +507,14 @@ int execve(char const *filename, char * const argv[], char * const env[]) {
     /* Count arguments. */ \
     size_t count = 1; /* arg */ \
     va_start(ap, arg); \
-    while (va_arg(ap, char const *)) { \
+    while (va_arg(ap, char *)) { \
         count++; \
     } \
     va_end(ap); \
     \
     /* Copy varargs. */ \
     char *args[count + 1 /* terminating NULL */]; \
-    args[0] = (char *)arg; \
+    args[0] = (char *)arg; /* there's no other way around the cast */ \
     \
     size_t i = 1; \
     va_start(ap, arg); \

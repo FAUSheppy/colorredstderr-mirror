@@ -36,7 +36,7 @@ static void debug_write(int fd, int first_call, char const *format, va_list ap) 
     DLSYM_FUNCTION(real_close, "close");
 
     if (first_call) {
-        char nl = '\n';
+        char const nl = '\n';
         real_write(fd, &nl, 1);
     }
     real_write(fd, buffer, (size_t)written);
