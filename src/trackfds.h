@@ -135,7 +135,10 @@ static void init_from_environment(void) {
         *x = 0;
 
         int fd = atoi(last);
-        if (fd < TRACKFDS_STATIC_COUNT) {
+        if (fd < 0) {
+            goto next;
+
+        } else if (fd < TRACKFDS_STATIC_COUNT) {
             tracked_fds[fd] = 1;
         } else {
             if (!tracked_fds_list) {

@@ -40,6 +40,9 @@ fi
 LC_ALL=C
 unset LANGUAGE
 
+# Set default COLORED_STDERR_FDS value.
+fds=2,
+
 
 die() {
     echo "$@" >&2
@@ -75,7 +78,7 @@ run_test() {
     (
         # Standard setup.
         LD_PRELOAD="$library"
-        COLORED_STDERR_FDS=2,
+        COLORED_STDERR_FDS="$fds"
         export LD_PRELOAD
         export COLORED_STDERR_FDS
 
@@ -101,17 +104,27 @@ run_test() {
 
 test_script() {
     testcase="$1"
-    shift
-    run_test "$srcdir/$testcase" "$srcdir/$testcase.expected" "$@"
+    expected="$2"
+    shift; shift || true
+
+    if test -z "$expected"; then
+        expected="$testcase"
+    fi
+    run_test "$srcdir/$testcase" "$srcdir/$expected.expected" "$@"
 }
 test_script_subshell() {
-    test_script "$1" bash -c 'bash $1' ''
+    test_script "$1" "$2" bash -c 'bash $1' ''
 }
 test_program() {
     testcase="$1"
-    shift
-    run_test "$builddir/$testcase" "$srcdir/$testcase.expected" "$@"
+    expected="$2"
+    shift; shift || true
+
+    if test -z "$expected"; then
+        expected="$testcase"
+    fi
+    run_test "$builddir/$testcase" "$srcdir/$expected.expected" "$@"
 }
 test_program_subshell() {
-    test_program "$1" sh -c '$1' ''
+    test_program "$1" "$2" sh -c '$1' ''
 }

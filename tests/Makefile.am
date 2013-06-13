@@ -1,4 +1,5 @@
-TESTS = test_example.sh \
+TESTS = test_environment.sh \
+        test_example.sh \
         test_exec.sh \
         test_noforce.sh \
         test_redirects.sh \
@@ -21,6 +22,8 @@ endif
 
 dist_check_SCRIPTS = $(TESTS) lib.sh
 dist_check_DATA = example.expected \
+                  example_environment.expected \
+                  example_environment_empty.expected \
                   example_error.expected \
                   example_exec.expected \
                   example_noforce.sh \
