@@ -22,13 +22,13 @@ dist_check_SCRIPTS = $(TESTS) lib.sh
 dist_check_DATA = example.expected \
                   example_error.expected \
                   example_exec.expected \
-                  example_vfork.expected \
                   example_noforce.sh \
                   example_noforce.sh.expected \
                   example_redirects.sh \
                   example_redirects.sh.expected \
                   example_simple.sh \
-                  example_simple.sh.expected
+                  example_simple.sh.expected \
+                  example_vfork.expected
 
 # Used by lib.sh.
 export EGREP
