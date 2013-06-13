@@ -73,8 +73,12 @@ DEBUG
 
 To enable debug mode, configure coloredstderr with '--enable-debug'.
 
+*Important:* Debug mode enables `assert()`s in the code which might abort the
+process if an error condition is detected!
+
 Debug mode is slower than normal mode. To log only warnings without the
-overhead of debug mode use '--enable-warnings'.
+overhead of debug mode use '--enable-warnings'. `assert()`s are not enabled
+with '--enable-warnings', so it's safe to use.
 
 Debug messages are written to the file `colored_stderr_debug_log.txt` in the
 current working directory _if_ it exists. If it exists debug messages are

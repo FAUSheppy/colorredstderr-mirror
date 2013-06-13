@@ -25,6 +25,12 @@
 /* Must be loaded before the following headers. */
 #include "ldpreload.h"
 
+/* Disable assert()s if not compiled with --enable-debug. */
+#ifndef DEBUG
+# define NDEBUG
+#endif
+
+#include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
@@ -78,6 +84,8 @@ static int force_write_to_non_tty;
  * additional call. */
 static int isatty_noinline(int fd) noinline;
 static int isatty_noinline(int fd) {
+    assert(fd >= 0);
+
     int saved_errno = errno;
     int result = isatty(fd);
     errno = saved_errno;
@@ -90,6 +98,8 @@ static void dup_fd(int oldfd, int newfd) {
 #ifdef DEBUG
     debug("%3d -> %3d\t\t\t[%d]\n", oldfd, newfd, getpid());
 #endif
+
+    assert(oldfd >= 0 && newfd >= 0);
 
     if (unlikely(!initialized)) {
         init_from_environment();
@@ -112,6 +122,8 @@ static void close_fd(int fd) {
 #ifdef DEBUG
     debug("%3d ->   .\t\t\t[%d]\n", fd, getpid());
 #endif
+
+    assert(fd >= 0);
 
     if (unlikely(!initialized)) {
         init_from_environment();

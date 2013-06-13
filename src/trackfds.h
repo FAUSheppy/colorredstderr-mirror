@@ -51,6 +51,8 @@ static void tracked_fds_debug(void) {
 #endif
 
 static int init_tracked_fds_list(size_t count) {
+    assert(count > 0);
+
     /* Reduce reallocs. */
     count += TRACKFDS_REALLOC_STEP;
 
@@ -164,6 +166,8 @@ next:
 }
 
 static char *update_environment_buffer_entry(char *x, int fd) {
+    assert(fd >= 0);
+
     int length = snprintf(x, 10 + 1, "%d", fd);
     if (length >= 10 + 1) {
         /* Integer too big to fit the buffer, skip it. */
@@ -183,6 +187,8 @@ static char *update_environment_buffer_entry(char *x, int fd) {
     return x;
 }
 static void update_environment_buffer(char *x) {
+    assert(initialized);
+
     size_t i;
     for (i = 0; i < TRACKFDS_STATIC_COUNT; i++) {
         if (tracked_fds[i]) {
@@ -194,6 +200,8 @@ static void update_environment_buffer(char *x) {
     }
 }
 inline static size_t update_environment_buffer_size(void) {
+    assert(initialized);
+
     /* Use the maximum count (TRACKFDS_STATIC_COUNT) of used descriptors
      * because it's simple and small enough not to be a problem.
      *
@@ -229,6 +237,8 @@ static void update_environment(void) {
 
 
 static void tracked_fds_add(int fd) {
+    assert(fd >= 0);
+
     if (fd < TRACKFDS_STATIC_COUNT) {
         tracked_fds[fd] = 1;
 #if 0
@@ -269,6 +279,8 @@ static void tracked_fds_add(int fd) {
 #endif
 }
 static int tracked_fds_remove(int fd) {
+    assert(fd >= 0);
+
     if (fd < TRACKFDS_STATIC_COUNT) {
         int old_value = tracked_fds[fd];
         tracked_fds[fd] = 0;
@@ -314,6 +326,8 @@ static int tracked_fds_find_slow(int fd) noinline;
  */
 inline static int tracked_fds_find(int fd) always_inline;
 static int tracked_fds_find(int fd) {
+    assert(fd >= 0);
+
     if (fd < TRACKFDS_STATIC_COUNT) {
         return tracked_fds[fd];
     }
@@ -321,6 +335,8 @@ static int tracked_fds_find(int fd) {
     return tracked_fds_find_slow(fd);
 }
 static int tracked_fds_find_slow(int fd) {
+    assert(initialized);
+
     if (tracked_fds_list_count == 0) {
         return 0;
     }
