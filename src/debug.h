@@ -24,8 +24,10 @@ static void debug_write(int fd, int first_call, char const *format, va_list ap) 
     char buffer[1024];
 
     int written = vsnprintf(buffer, sizeof(buffer), format, ap);
+    if (written < 0) {
+        return; /* shouldn't happen */
     /* Overflow. */
-    if ((size_t)written >= sizeof(buffer)) {
+    } else if ((size_t)written >= sizeof(buffer)) {
         written = sizeof(buffer) - 1;
     }
 

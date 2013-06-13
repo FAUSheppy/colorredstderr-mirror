@@ -169,7 +169,7 @@ static char *update_environment_buffer_entry(char *x, int fd) {
     assert(fd >= 0);
 
     int length = snprintf(x, 10 + 1, "%d", fd);
-    if (length >= 10 + 1) {
+    if (length >= 10 + 1 || length <= 0 /* shouldn't happen */) {
         /* Integer too big to fit the buffer, skip it. */
 #ifdef WARNING
         warning("update_environment_buffer_entry(): truncated fd: %d [%d]\n",
