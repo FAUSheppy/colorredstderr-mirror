@@ -2,7 +2,8 @@ TESTS = test_example.sh \
         test_exec.sh \
         test_noforce.sh \
         test_redirects.sh \
-        test_simple.sh
+        test_simple.sh \
+        test_symbols.sh
 check_PROGRAMS = example example_exec
 example_SOURCES = example.c
 example_exec_SOURCES = example_exec.c
