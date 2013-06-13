@@ -325,7 +325,7 @@ static int tracked_fds_find_slow(int fd) noinline;
  * they are not called often enough.
  */
 inline static int tracked_fds_find(int fd) always_inline;
-static int tracked_fds_find(int fd) {
+inline static int tracked_fds_find(int fd) {
     assert(fd >= 0);
 
     if (fd < TRACKFDS_STATIC_COUNT) {
