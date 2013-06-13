@@ -54,7 +54,7 @@
  *     return result;
  */
 
-#define _HOOK_PRE(type, name) \
+#define _HOOK_PRE(type, name, fd) \
         int handle; \
         if (unlikely(!(real_ ## name ))) { \
             *(void **) (&(real_ ## name)) = dlsym_function(#name); \
@@ -62,12 +62,8 @@
             if (unlikely(!initialized)) { \
                 init_from_environment(); \
             } \
-        }
-#define _HOOK_PRE_FD(type, name, fd) \
-        type result; \
-        _HOOK_PRE_FD_(type, name, fd)
-#define _HOOK_PRE_FD_(type, name, fd) \
-        _HOOK_PRE(type, name) \
+        } \
+        /* Check if this fd should be handled. */ \
         if (unlikely(tracked_fds_find(fd))) { \
             if (unlikely(force_write_to_non_tty)) { \
                 handle = 1; \
@@ -76,22 +72,18 @@
             } \
         } else { \
             handle = 0; \
-        } \
+        }
+#define _HOOK_PRE_FD(type, name, fd) \
+        type result; \
+        _HOOK_PRE_FD_(type, name, fd)
+#define _HOOK_PRE_FD_(type, name, fd) \
+        _HOOK_PRE(type, name, fd) \
         if (unlikely(handle)) { \
             handle_fd_pre(fd); \
         }
 #define _HOOK_PRE_FILE(type, name, file) \
         type result; \
-        _HOOK_PRE(type, name) \
-        if (unlikely(tracked_fds_find(fileno(file)))) { \
-            if (unlikely(force_write_to_non_tty)) { \
-                handle = 1; \
-            } else { \
-                handle = isatty_noinline(fileno(file)); \
-            } \
-        } else { \
-            handle = 0; \
-        } \
+        _HOOK_PRE(type, name, fileno(file)) \
         if (unlikely(handle)) { \
             handle_file_pre(file); \
         }
