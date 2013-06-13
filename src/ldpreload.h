@@ -53,7 +53,7 @@ static void *dlsym_function(char const *name) {
 }
 
 #define DLSYM_FUNCTION(pointer, name) \
-    if (!(pointer)) { \
+    if (unlikely(!(pointer))) { \
         *(void **) (&(pointer)) = dlsym_function(name); \
     }
 
