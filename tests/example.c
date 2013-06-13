@@ -56,5 +56,13 @@ int main(int argc, char **argv unused) {
     putc_unlocked('x', stderr);
     putc_unlocked('\n', stdout);
 
+    /* Test invalid stuff. */
+    close(-42);
+    close(-4711);
+    /* Can't test this, results in a segfault with the "normal" fclose(). */
+    /*fclose(NULL);*/
+    dup(-12);
+    dup2(12, -42);
+
     return EXIT_SUCCESS;
 }

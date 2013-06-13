@@ -396,14 +396,20 @@ static int (*real_close)(int);
 int close(int fd) {
     DLSYM_FUNCTION(real_close, "close");
 
-    close_fd(fd);
+    if (fd >= 0) {
+        close_fd(fd);
+    }
     return real_close(fd);
 }
 static int (*real_fclose)(FILE *);
 int fclose(FILE *fp) {
+    int fd;
+
     DLSYM_FUNCTION(real_fclose, "fclose");
 
-    close_fd(fileno(fp));
+    if (fp != NULL && (fd = fileno(fp)) >= 0) {
+        close_fd(fd);
+    }
     return real_fclose(fp);
 }
 
