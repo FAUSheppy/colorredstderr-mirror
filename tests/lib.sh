@@ -88,7 +88,7 @@ run_test() {
         export COLORED_STDERR_PRE
         export COLORED_STDERR_POST
         # And force writes to a file (unless we are testing the force).
-        if test "x$force_write" != x; then
+        if test -n "$force_write"; then
             COLORED_STDERR_FORCE_WRITE=1
             export COLORED_STDERR_FORCE_WRITE
         fi
