@@ -36,7 +36,9 @@ if test "x$GCC" = xyes; then
     CFLAGS="-Wall -Wextra -Wconversion $CFLAGS"
 fi
 
-AC_CHECK_HEADERS([fcntl.h error.h])
+AC_CHECK_HEADERS([error.h])
+AC_CHECK_HEADERS([fcntl.h],
+                 [],[AC_MSG_ERROR([header is required])])
 
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
