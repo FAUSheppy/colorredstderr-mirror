@@ -100,7 +100,7 @@ static void init_from_environment(void) {
 #ifdef DEBUG
     debug("  getenv(\"%s\"): \"%s\"\n", ENV_NAME_FDS, env);
 #endif
-    /* Environment is read-only. */
+    /* Environment must be treated read-only. */
     char env_copy[strlen(env) + 1];
     strcpy(env_copy, env);
 
@@ -132,6 +132,7 @@ static void init_from_environment(void) {
             break;
         }
 
+        /* Replace ',' to null-terminate number for atoi(). */
         *x = 0;
 
         int fd = atoi(last);
@@ -184,7 +185,7 @@ static char *update_environment_buffer_entry(char *x, int fd) {
     /* Write comma after number. */
     x += length;
     *x++ = ',';
-    /* Make sure the string is always zero terminated. */
+    /* Make sure the string is always null-terminated. */
     *x = 0;
 
     return x;
