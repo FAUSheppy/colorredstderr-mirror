@@ -105,7 +105,9 @@ run_test() {
 test_script() {
     testcase="$1"
     expected="$2"
-    shift; shift || true
+    # shift || true is not enough for dash.
+    test $# -ge 2 && shift
+    shift
 
     if test -z "$expected"; then
         expected="$testcase"
@@ -118,7 +120,8 @@ test_script_subshell() {
 test_program() {
     testcase="$1"
     expected="$2"
-    shift; shift || true
+    test $# -ge 2 && shift
+    shift
 
     if test -z "$expected"; then
         expected="$testcase"
