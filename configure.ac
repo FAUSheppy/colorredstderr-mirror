@@ -50,7 +50,7 @@ AX_C___ATTRIBUTE__
 AC_CHECK_MEMBER([struct _IO_FILE._fileno],
                 [AC_DEFINE([HAVE_STRUCT__IO_FILE__FILENO], 1,
                            [Define to 1 if `_fileno' is a member of `struct _IO_FILE'.])],
-                [],[[#include <libio.h>]])
+                [],[[#include <libio.h>]]) dnl ' fix for vim syntax coloring
 
 AC_FUNC_FORK
 AC_CHECK_FUNCS([memmove setenv],
