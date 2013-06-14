@@ -31,6 +31,27 @@ DEPENDENCIES
 - dynamic linker/loader which supports 'LD_PRELOAD' (e.g. GNU/Linux's ld.so)
 
 
+INSTALLATION
+------------
+
+    ./configure && make && make check
+
+Then either install the library with `make install` or just copy it from
+`src/.libs/` to wherever you want to install it:
+
+    rm -f /destination/path/for/library/libcoloredstderr.so
+    cp -L src/.libs/libcoloredstderr.so /destination/path/for/library/
+
+*Important:* If you install `libcoloredstderr.so` manually, make sure _not_ to
+use plain `cp` to overwrite an existing `libcoloredstderr.so` file which is in
+use! Doing so will crash all processes which were started with 'LD_PRELOAD'
+set to this file. This is not a bug in coloredstderr, but a general problem.
+`cp` truncates the file which causes the `mmap()` ed library to be in an
+inconsistent state causing a segmentation fault when using any functions of
+the library. Just remove the file first and then copy it. `make install`
+handles the install in this way and is therefore not affected.
+
+
 USAGE
 -----
 
