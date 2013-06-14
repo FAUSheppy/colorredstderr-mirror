@@ -89,6 +89,21 @@ The following additional environment variables are available:
   are colored.
 
 
+To set custom colors as pre/post strings you can use the `$''` feature of Bash
+and Zsh:
+
+    export COLORED_STDERR_PRE=$'\033[91m' # bright red
+    export COLORED_STDERR_POST=$'\033[0m' # default
+
+Or to be more compatible you can use the following which should work in any
+Bourne shell:
+
+    esc=`printf '\033'`
+    COLORED_STDERR_PRE="${esc}[91m" # red
+    COLORED_STDERR_POST="${esc}[0m" # default
+    export COLORED_STDERR_PRE COLORED_STDERR_POST
+
+
 DEBUG
 -----
 
