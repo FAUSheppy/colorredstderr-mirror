@@ -168,34 +168,28 @@
     }
 
 #define HOOK_VAR_FILE1(type, name, file, func, type1, arg1) \
-    static type (*real_ ## func)(type1, va_list); \
     type name(type1 arg1, ...) { \
         va_list ap; \
-        _HOOK_PRE_FILE(type, func, file) \
         va_start(ap, arg1); \
-        result = real_ ## func(arg1, ap); \
+        type result = func(arg1, ap); \
         va_end(ap); \
-        _HOOK_POST_FILE(file) \
+        return result; \
     }
 #define HOOK_VAR_FILE2(type, name, file, func, type1, arg1, type2, arg2) \
-    static type (*real_ ## func)(type1, type2, va_list); \
     type name(type1 arg1, type2 arg2, ...) { \
         va_list ap; \
-        _HOOK_PRE_FILE(type, func, file) \
         va_start(ap, arg2); \
-        result = real_ ## func(arg1, arg2, ap); \
+        type result = func(arg1, arg2, ap); \
         va_end(ap); \
-        _HOOK_POST_FILE(file) \
+        return result; \
     }
 #define HOOK_VAR_FILE3(type, name, file, func, type1, arg1, type2, arg2, type3, arg3) \
-    static type (*real_ ## func)(type1, type2, type3, va_list); \
     type name(type1 arg1, type2 arg2, type3 arg3, ...) { \
         va_list ap; \
-        _HOOK_PRE_FILE(type, func, file) \
         va_start(ap, arg3); \
-        result = real_ ## func(arg1, arg2, arg3, ap); \
+        type result = func(arg1, arg2, arg3, ap); \
         va_end(ap); \
-        _HOOK_POST_FILE(file) \
+        return result; \
     }
 
 #endif
