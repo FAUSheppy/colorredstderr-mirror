@@ -51,6 +51,11 @@ inconsistent state causing a segmentation fault when using any functions of
 the library. Just remove the file first and then copy it. `make install`
 handles the install in this way and is therefore not affected.
 
+As a simple safeguard, `make` builds and installs the `libcoloredstderr.so`
+file non-writable to prevent accidental overwrites. Even if the overwrite is
+forced with `cp -f`, the file is unlinked and recreated by `cp` because the
+file is non-writable, preventing the problem.
+
 
 USAGE
 -----
