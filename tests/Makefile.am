@@ -1,3 +1,6 @@
+# Default since automake 1.13, necessary for older versions.
+AUTOMAKE_OPTIONS = color-tests parallel-tests
+
 TESTS = test_environment.sh \
         test_example.sh \
         test_exec.sh \
