@@ -101,6 +101,20 @@
         return result;
 
 
+#define HOOK_FUNC_DEF1(type, name, type1, arg1) \
+    static type (*real_ ## name)(type1); \
+    type name(type1 arg1)
+#define HOOK_FUNC_DEF2(type, name, type1, arg1, type2, arg2) \
+    static type (*real_ ## name)(type1, type2); \
+    type name(type1 arg1, type2 arg2)
+#define HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) \
+    static type (*real_ ## name)(type1, type2, type3); \
+    type name(type1 arg1, type2 arg2, type3 arg3)
+
+#define HOOK_FUNC_VAR_DEF2(type, name, type1, arg1, type2, arg2) \
+    static type (*real_ ## name)(type1, type2, ...); \
+    type name(type1 arg1, type2 arg2, ...)
+
 #define HOOK_VOID1(type, name, fd, type1, arg1) \
     static type (*real_ ## name)(type1); \
     type name(type1 arg1) { \

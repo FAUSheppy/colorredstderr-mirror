@@ -336,10 +336,8 @@ void error(int status, int errnum, char const *format, ...) {
 
 /* Hook functions which duplicate file descriptors to track them. */
 
-static int (*real_dup)(int);
-static int (*real_dup2)(int, int);
-static int (*real_dup3)(int, int, int);
-int dup(int oldfd) {
+/* int dup(int) */
+HOOK_FUNC_DEF1(int, dup, int, oldfd) {
     int newfd;
 
     DLSYM_FUNCTION(real_dup, "dup");
@@ -351,7 +349,8 @@ int dup(int oldfd) {
 
     return newfd;
 }
-int dup2(int oldfd, int newfd) {
+/* int dup2(int, int) */
+HOOK_FUNC_DEF2(int, dup2, int, oldfd, int, newfd) {
     DLSYM_FUNCTION(real_dup2, "dup2");
 
     newfd = real_dup2(oldfd, newfd);
@@ -361,7 +360,8 @@ int dup2(int oldfd, int newfd) {
 
     return newfd;
 }
-int dup3(int oldfd, int newfd, int flags) {
+/* int dup3(int, int, int) */
+HOOK_FUNC_DEF3(int, dup3, int, oldfd, int, newfd, int, flags) {
     DLSYM_FUNCTION(real_dup3, "dup3");
 
     newfd = real_dup3(oldfd, newfd, flags);
@@ -372,8 +372,8 @@ int dup3(int oldfd, int newfd, int flags) {
     return newfd;
 }
 
-static int (*real_fcntl)(int, int, ...);
-int fcntl(int fd, int cmd, ...) {
+/* int fcntl(int, int, ...) */
+HOOK_FUNC_VAR_DEF2(int, fcntl, int, fd, int, cmd /*, ... */) {
     int result;
     va_list ap;
 
@@ -404,8 +404,8 @@ int fcntl(int fd, int cmd, ...) {
     return result;
 }
 
-static int (*real_close)(int);
-int close(int fd) {
+/* int close(int) */
+HOOK_FUNC_DEF1(int, close, int, fd) {
     DLSYM_FUNCTION(real_close, "close");
 
     if (fd >= 0) {
@@ -413,8 +413,8 @@ int close(int fd) {
     }
     return real_close(fd);
 }
-static int (*real_fclose)(FILE *);
-int fclose(FILE *fp) {
+/* int fclose(FILE *) */
+HOOK_FUNC_DEF1(int, fclose, FILE *, fp) {
     int fd;
 
     DLSYM_FUNCTION(real_fclose, "fclose");
@@ -451,8 +451,8 @@ pid_t vfork(void) {
  * ENV_NAME_FDS. It's also faster to update the environment only when
  * necessary, right before the exec() to pass it to the new process. */
 
-static int (*real_execve)(char const *filename, char * const argv[], char * const env[]);
-int execve(char const *filename, char * const argv[], char * const env[]) {
+/* int execve(char const *, char * const [], char * const []) */
+HOOK_FUNC_DEF3(int, execve, char const *, filename, char * const *, argv, char * const *, env) {
     DLSYM_FUNCTION(real_execve, "execve");
 
     int found = 0;
@@ -552,16 +552,16 @@ int execle(char const *path, char const *arg, ... /*, char * const envp[] */) {
     return execve(path, args, envp);
 }
 
-static int (*real_execv)(char const *path, char * const argv[]);
-int execv(char const *path, char * const argv[]) {
+/* int execv(char const *, char * const []) */
+HOOK_FUNC_DEF2(int, execv, char const *, path, char * const *, argv) {
     DLSYM_FUNCTION(real_execv, "execv");
 
     update_environment();
     return real_execv(path, argv);
 }
 
-static int (*real_execvp)(char const *path, char * const argv[]);
-int execvp(char const *file, char * const argv[]) {
+/* int execvp(char const *, char * const []) */
+HOOK_FUNC_DEF2(int, execvp, char const *, file, char * const *, argv) {
     DLSYM_FUNCTION(real_execvp, "execvp");
 
     update_environment();
