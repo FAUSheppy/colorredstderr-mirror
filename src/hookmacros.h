@@ -110,6 +110,9 @@
 #define HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) \
     static type (*real_ ## name)(type1, type2, type3); \
     type name(type1 arg1, type2 arg2, type3 arg3)
+#define HOOK_FUNC_DEF4(type, name, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
+    static type (*real_ ## name)(type1, type2, type3, type4); \
+    type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 
 #define HOOK_FUNC_VAR_DEF2(type, name, type1, arg1, type2, arg2) \
     static type (*real_ ## name)(type1, type2, ...); \
@@ -118,37 +121,41 @@
 #define HOOK_FUNC_SIMPLE3(type, name, type1, arg1, type2, arg2, type3, arg3) \
     type name(type1 arg1, type2 arg2, type3 arg3)
 
+#define HOOK_FUNC_VAR_SIMPLE1(type, name, type1, arg1) \
+    type name(type1 arg1, ...)
+#define HOOK_FUNC_VAR_SIMPLE2(type, name, type1, arg1, type2, arg2) \
+    type name(type1 arg1, type2 arg2, ...)
+#define HOOK_FUNC_VAR_SIMPLE3(type, name, type1, arg1, type2, arg2, type3, arg3) \
+    type name(type1 arg1, type2 arg2, type3 arg3, ...)
+
 #define HOOK_VOID1(type, name, fd, type1, arg1) \
-    static type (*real_ ## name)(type1); \
-    type name(type1 arg1) { \
+    HOOK_FUNC_DEF1(type, name, type1, arg1) { \
         _HOOK_PRE_FD_(type, name, fd) \
         real_ ## name(arg1); \
         _HOOK_POST_FD_(fd) \
     }
 #define HOOK_VOID2(type, name, fd, type1, arg1, type2, arg2) \
-    static type (*real_ ## name)(type1, type2); \
-    type name(type1 arg1, type2 arg2) { \
+    HOOK_FUNC_DEF2(type, name, type1, arg1, type2, arg2) { \
         _HOOK_PRE_FD_(type, name, fd) \
         real_ ## name(arg1, arg2); \
         _HOOK_POST_FD_(fd) \
     }
 #define HOOK_VOID3(type, name, fd, type1, arg1, type2, arg2, type3, arg3) \
-    static type (*real_ ## name)(type1, type2, type3); \
-    type name(type1 arg1, type2 arg2, type3 arg3) { \
+    HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) { \
         _HOOK_PRE_FD_(type, name, fd) \
         real_ ## name(arg1, arg2, arg3); \
         _HOOK_POST_FD_(fd) \
     }
 
 #define HOOK_VAR_VOID1(type, name, fd, func, type1, arg1) \
-    type name(type1 arg1, ...) { \
+    HOOK_FUNC_VAR_SIMPLE1(type, name, type1, arg1) { \
         va_list ap; \
         va_start(ap, arg1); \
         func(arg1, ap); \
         va_end(ap); \
     }
 #define HOOK_VAR_VOID2(type, name, fd, func, type1, arg1, type2, arg2) \
-    type name(type1 arg1, type2 arg2, ...) { \
+    HOOK_FUNC_VAR_SIMPLE2(type, name, type1, arg1, type2, arg2) { \
         va_list ap; \
         va_start(ap, arg2); \
         func(arg1, arg2, ap); \
@@ -156,51 +163,45 @@
     }
 
 #define HOOK_FD2(type, name, fd, type1, arg1, type2, arg2) \
-    static type (*real_ ## name)(type1, type2); \
-    type name(type1 arg1, type2 arg2) { \
+    HOOK_FUNC_DEF2(type, name, type1, arg1, type2, arg2) { \
         _HOOK_PRE_FD(type, name, fd) \
         result = real_ ## name(arg1, arg2); \
         _HOOK_POST_FD(fd) \
     }
 #define HOOK_FD3(type, name, fd, type1, arg1, type2, arg2, type3, arg3) \
-    static type (*real_ ## name)(type1, type2, type3); \
-    type name(type1 arg1, type2 arg2, type3 arg3) { \
+    HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) { \
         _HOOK_PRE_FD(type, name, fd) \
         result = real_ ## name(arg1, arg2, arg3); \
         _HOOK_POST_FD(fd) \
     }
 
 #define HOOK_FILE1(type, name, file, type1, arg1) \
-    static type (*real_ ## name)(type1); \
-    type name(type1 arg1) { \
+    HOOK_FUNC_DEF1(type, name, type1, arg1) { \
         _HOOK_PRE_FILE(type, name, file) \
         result = real_ ## name(arg1); \
         _HOOK_POST_FILE(file) \
     }
 #define HOOK_FILE2(type, name, file, type1, arg1, type2, arg2) \
-    static type (*real_ ## name)(type1, type2); \
-    type name(type1 arg1, type2 arg2) { \
+    HOOK_FUNC_DEF2(type, name, type1, arg1, type2, arg2) { \
         _HOOK_PRE_FILE(type, name, file) \
         result = real_ ## name(arg1, arg2); \
         _HOOK_POST_FILE(file) \
     }
 #define HOOK_FILE3(type, name, file, type1, arg1, type2, arg2, type3, arg3) \
-    static type (*real_ ## name)(type1, type2, type3); \
-    type name(type1 arg1, type2 arg2, type3 arg3) { \
+    HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) { \
         _HOOK_PRE_FILE(type, name, file) \
         result = real_ ## name(arg1, arg2, arg3); \
         _HOOK_POST_FILE(file) \
     }
 #define HOOK_FILE4(type, name, file, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
-    static type (*real_ ## name)(type1, type2, type3, type4); \
-    type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4) { \
+    HOOK_FUNC_DEF4(type, name, type1, arg1, type2, arg2, type3, arg3, type4, arg4) { \
         _HOOK_PRE_FILE(type, name, file) \
         result = real_ ## name(arg1, arg2, arg3, arg4); \
         _HOOK_POST_FILE(file) \
     }
 
 #define HOOK_VAR_FILE1(type, name, file, func, type1, arg1) \
-    type name(type1 arg1, ...) { \
+    HOOK_FUNC_VAR_SIMPLE1(type, name, type1, arg1) { \
         va_list ap; \
         va_start(ap, arg1); \
         type result = func(arg1, ap); \
@@ -208,7 +209,7 @@
         return result; \
     }
 #define HOOK_VAR_FILE2(type, name, file, func, type1, arg1, type2, arg2) \
-    type name(type1 arg1, type2 arg2, ...) { \
+    HOOK_FUNC_VAR_SIMPLE2(type, name, type1, arg1, type2, arg2) { \
         va_list ap; \
         va_start(ap, arg2); \
         type result = func(arg1, arg2, ap); \
@@ -216,7 +217,7 @@
         return result; \
     }
 #define HOOK_VAR_FILE3(type, name, file, func, type1, arg1, type2, arg2, type3, arg3) \
-    type name(type1 arg1, type2 arg2, type3 arg3, ...) { \
+    HOOK_FUNC_VAR_SIMPLE3(type, name, type1, arg1, type2, arg2, type3, arg3) { \
         va_list ap; \
         va_start(ap, arg3); \
         type result = func(arg1, arg2, arg3, ap); \
