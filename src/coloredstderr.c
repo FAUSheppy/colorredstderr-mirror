@@ -265,7 +265,7 @@ HOOK_FD2(int, __overflow, f->_fileno, _IO_FILE *, f, int, ch)
 HOOK_VOID1(void, perror, STDERR_FILENO,
            char const *, s)
 
-/* error(3) */
+/* error(3), non-standard GNU extension */
 #ifdef HAVE_ERROR_H
 static void error_vararg(int status, int errnum,
                          char const *filename, unsigned int linenum,

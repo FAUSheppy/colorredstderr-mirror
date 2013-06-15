@@ -20,10 +20,11 @@
 #ifndef COMPILER_H
 #define COMPILER_H 1
 
-/* Prevent/force inlining. Used to improve performance. */
 #ifdef HAVE___ATTRIBUTE__
+/* Prevent/force inlining. Used to improve performance. */
 # define noinline      __attribute__((noinline))
 # define always_inline __attribute__((always_inline))
+/* Unused parameter. */
 # define unused        __attribute__((unused))
 #else
 # define noinline
