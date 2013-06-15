@@ -103,29 +103,38 @@
 
 #define HOOK_FUNC_DEF1(type, name, type1, arg1) \
     static type (*real_ ## name)(type1); \
+    type name(type1) visibility_protected; \
     type name(type1 arg1)
 #define HOOK_FUNC_DEF2(type, name, type1, arg1, type2, arg2) \
     static type (*real_ ## name)(type1, type2); \
+    type name(type1, type2) visibility_protected; \
     type name(type1 arg1, type2 arg2)
 #define HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) \
     static type (*real_ ## name)(type1, type2, type3); \
+    type name(type1, type2, type3) visibility_protected; \
     type name(type1 arg1, type2 arg2, type3 arg3)
 #define HOOK_FUNC_DEF4(type, name, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
     static type (*real_ ## name)(type1, type2, type3, type4); \
+    type name(type1, type2, type3, type4) visibility_protected; \
     type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 
 #define HOOK_FUNC_VAR_DEF2(type, name, type1, arg1, type2, arg2) \
     static type (*real_ ## name)(type1, type2, ...); \
+    type name(type1, type2, ...) visibility_protected; \
     type name(type1 arg1, type2 arg2, ...)
 
 #define HOOK_FUNC_SIMPLE3(type, name, type1, arg1, type2, arg2, type3, arg3) \
+    type name(type1, type2, type3) visibility_protected; \
     type name(type1 arg1, type2 arg2, type3 arg3)
 
 #define HOOK_FUNC_VAR_SIMPLE1(type, name, type1, arg1) \
+    type name(type1, ...) visibility_protected; \
     type name(type1 arg1, ...)
 #define HOOK_FUNC_VAR_SIMPLE2(type, name, type1, arg1, type2, arg2) \
+    type name(type1, type2, ...) visibility_protected; \
     type name(type1 arg1, type2 arg2, ...)
 #define HOOK_FUNC_VAR_SIMPLE3(type, name, type1, arg1, type2, arg2, type3, arg3) \
+    type name(type1, type2, type3, ...) visibility_protected; \
     type name(type1 arg1, type2 arg2, type3 arg3, ...)
 
 #define HOOK_VOID1(type, name, fd, type1, arg1) \

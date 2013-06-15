@@ -26,10 +26,19 @@
 # define always_inline __attribute__((always_inline))
 /* Unused parameter. */
 # define unused        __attribute__((unused))
+/* Mark the function protected, which means it can't be overwritten by other
+ * modules (libraries), e.g. with LD_PRELOAD); otherwise same as the default
+ * visibility. This causes the compiler not use the PLT (and no relocations)
+ * for local calls from inside this module; but the symbols are still
+ * exported. This is faster and in this case prevents useless lookups as we
+ * hook those functions and nobody else should modify them. Not strictly
+ * necessary, but nice to have. */
+# define visibility_protected __attribute__((visibility("protected")))
 #else
 # define noinline
 # define always_inline
 # define unused
+# define visibility_protected
 #endif
 
 /* Branch prediction information for the compiler. */
