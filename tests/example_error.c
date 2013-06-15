@@ -31,7 +31,7 @@
 void (*error_print_progname)(void);
 
 
-static void print_prognmae(void) {
+static void print_progname(void) {
     fprintf(stderr, "PROG");
 }
 
@@ -46,7 +46,7 @@ int main(int argc unused, char **argv unused) {
     error_at_line(0, ENOMEM, "file", 42, "<message>");
     error_at_line(0, ENOMEM, "file", 42, "<message>");
 
-    error_print_progname = print_prognmae;
+    error_print_progname = print_progname;
     error_one_per_line = 1;
 
     error(0, 0, "<message>");
