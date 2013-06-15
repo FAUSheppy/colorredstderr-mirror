@@ -6,6 +6,8 @@ coloredstderr is a small library which uses 'LD_PRELOAD' to color stderr.
 
 Like all solutions using 'LD_PRELOAD' it only works with dynamically linked
 binaries. Statically linked binaries, for example valgrind, are not supported.
+setuid binaries are also not supported ('LD_PRELOAD' disabled for security
+reasons).
 
 
 It was inspired by stderred [2]. Similar solutions (using 'LD_PRELOAD')
