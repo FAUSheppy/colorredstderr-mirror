@@ -38,6 +38,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifdef HAVE_ERR_H
+# include <err.h>
+#endif
 #ifdef HAVE_ERROR_H
 # include <error.h>
 #endif
@@ -264,6 +267,33 @@ HOOK_FD2(int, __overflow, f->_fileno, _IO_FILE *, f, int, ch)
 /* perror(3) */
 HOOK_VOID1(void, perror, STDERR_FILENO,
            char const *, s)
+
+/* err(3), non standard BSD extension */
+#ifdef HAVE_ERR_H
+HOOK_VAR_VOID2(void, err, STDERR_FILENO, verr,
+               int, eval, char const *, fmt)
+HOOK_VAR_VOID2(void, errx, STDERR_FILENO, verrx,
+               int, eval, char const *, fmt)
+HOOK_VAR_VOID1(void, warn, STDERR_FILENO, vwarn,
+               char const *, fmt)
+HOOK_VAR_VOID1(void, warnx, STDERR_FILENO, vwarnx,
+               char const *, fmt)
+HOOK_FUNC_SIMPLE3(void, verr, int, eval, const char *, fmt, va_list, args) {
+    /* Can't use verr() directly as it terminates the process which prevents
+     * the post string from being printed. */
+    vwarn(fmt, args);
+    exit(eval);
+}
+HOOK_FUNC_SIMPLE3(void, verrx, int, eval, const char *, fmt, va_list, args) {
+    /* See verr(). */
+    vwarnx(fmt, args);
+    exit(eval);
+}
+HOOK_VOID2(void, vwarn, STDERR_FILENO,
+           char const *, fmt, va_list, args)
+HOOK_VOID2(void, vwarnx, STDERR_FILENO,
+           char const *, fmt, va_list, args)
+#endif
 
 /* error(3), non-standard GNU extension */
 #ifdef HAVE_ERROR_H

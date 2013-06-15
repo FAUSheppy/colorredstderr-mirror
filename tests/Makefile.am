@@ -12,6 +12,11 @@ check_PROGRAMS = example example_exec
 example_SOURCES = example.c
 example_exec_SOURCES = example_exec.c
 
+if HAVE_ERR_H
+    TESTS += test_err.sh
+    check_PROGRAMS += example_err
+    example_error_SOURCES = example_err.c
+endif
 if HAVE_ERROR_H
     TESTS += test_error.sh
     check_PROGRAMS += example_error
@@ -24,9 +29,11 @@ if HAVE_VFORK
 endif
 
 dist_check_SCRIPTS = $(TESTS) lib.sh
-dist_check_DATA = example.expected \
+dist_check_DATA = example.h \
+                  example.expected \
                   example_environment.expected \
                   example_environment_empty.expected \
+                  example_err.expected \
                   example_error.expected \
                   example_exec.expected \
                   example_noforce.sh \

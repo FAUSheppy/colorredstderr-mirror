@@ -36,7 +36,7 @@ if test "x$GCC" = xyes; then
     CFLAGS="-Wall -Wextra -Wconversion $CFLAGS"
 fi
 
-AC_CHECK_HEADERS([error.h])
+AC_CHECK_HEADERS([err.h error.h])
 AC_CHECK_HEADERS([fcntl.h],
                  [],[AC_MSG_ERROR([header is required])])
 
@@ -81,6 +81,7 @@ AC_ARG_ENABLE([debug],
                fi])
 
 dnl Used in tests/Makefile.am to build the test only if function is available.
+AM_CONDITIONAL([HAVE_ERR_H],[test "x$ac_cv_header_err_h" = xyes])
 AM_CONDITIONAL([HAVE_ERROR_H],[test "x$ac_cv_header_error_h" = xyes])
 AM_CONDITIONAL([HAVE_VFORK],[test "x$ac_cv_func_vfork_works" = xyes])
 

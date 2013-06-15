@@ -115,12 +115,44 @@
     static type (*real_ ## name)(type1, type2, ...); \
     type name(type1 arg1, type2 arg2, ...)
 
+#define HOOK_FUNC_SIMPLE3(type, name, type1, arg1, type2, arg2, type3, arg3) \
+    type name(type1 arg1, type2 arg2, type3 arg3)
+
 #define HOOK_VOID1(type, name, fd, type1, arg1) \
     static type (*real_ ## name)(type1); \
     type name(type1 arg1) { \
         _HOOK_PRE_FD_(type, name, fd) \
         real_ ## name(arg1); \
         _HOOK_POST_FD_(fd) \
+    }
+#define HOOK_VOID2(type, name, fd, type1, arg1, type2, arg2) \
+    static type (*real_ ## name)(type1, type2); \
+    type name(type1 arg1, type2 arg2) { \
+        _HOOK_PRE_FD_(type, name, fd) \
+        real_ ## name(arg1, arg2); \
+        _HOOK_POST_FD_(fd) \
+    }
+#define HOOK_VOID3(type, name, fd, type1, arg1, type2, arg2, type3, arg3) \
+    static type (*real_ ## name)(type1, type2, type3); \
+    type name(type1 arg1, type2 arg2, type3 arg3) { \
+        _HOOK_PRE_FD_(type, name, fd) \
+        real_ ## name(arg1, arg2, arg3); \
+        _HOOK_POST_FD_(fd) \
+    }
+
+#define HOOK_VAR_VOID1(type, name, fd, func, type1, arg1) \
+    type name(type1 arg1, ...) { \
+        va_list ap; \
+        va_start(ap, arg1); \
+        func(arg1, ap); \
+        va_end(ap); \
+    }
+#define HOOK_VAR_VOID2(type, name, fd, func, type1, arg1, type2, arg2) \
+    type name(type1 arg1, type2 arg2, ...) { \
+        va_list ap; \
+        va_start(ap, arg2); \
+        func(arg1, arg2, ap); \
+        va_end(ap); \
     }
 
 #define HOOK_FD2(type, name, fd, type1, arg1, type2, arg2) \

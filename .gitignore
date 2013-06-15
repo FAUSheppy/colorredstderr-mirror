@@ -23,6 +23,8 @@
 /tests/Makefile.in
 /tests/example
 /tests/example.o
+/tests/example_err
+/tests/example_err.o
 /tests/example_error
 /tests/example_error.o
 /tests/example_exec
@@ -31,6 +33,8 @@
 /tests/example_vfork.o
 /tests/test_environment.sh.log
 /tests/test_environment.sh.trs
+/tests/test_err.sh.log
+/tests/test_err.sh.trs
 /tests/test_error.sh.log
 /tests/test_error.sh.trs
 /tests/test_example.sh.log
