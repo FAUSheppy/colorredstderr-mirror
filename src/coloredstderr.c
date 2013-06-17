@@ -49,11 +49,12 @@
 # include <libio.h>
 #endif
 
-/* Conflicting declaration in glibc. */
+/* The following functions may be macros. Undefine them or they cause build
+ * failures when used in our hook macros below. */
+
+/* In glibc, real fwrite_unlocked() is called in macro. */
 #undef fwrite_unlocked
-/* These functions may be macros when compiling with hardening flags (fortify)
- * which cause build failures when used in our hook macros below. Observed
- * with Clang on Debian Wheezy. */
+/* In Clang when compiling with hardening flags (fortify) on Debian Wheezy. */
 #undef printf
 #undef fprintf
 
@@ -260,8 +261,14 @@ HOOK_FILE2(int, putc_unlocked, stream,
            int, c, FILE *, stream)
 HOOK_FILE1(int, putchar_unlocked, stdout,
            int, c)
-/* glibc defines (_IO_)putc_unlocked() to __overflow() in some cases. */
+/* glibc defines (_IO_)putc_unlocked() to a macro which either updates the
+ * output buffer or calls __overflow(). As this code is inlined we can't
+ * handle the first case, but if __overflow() is called we can color that
+ * part. As writes to stderr are never buffered, __overflow() is always called
+ * and everything works fine. This is only a problem if stdout is dupped to
+ * stderr (which shouldn't be the case too often). */
 #ifdef HAVE_STRUCT__IO_FILE__FILENO
+/* _IO_FILE is glibc's representation of FILE. */
 HOOK_FD2(int, __overflow, f->_fileno, _IO_FILE *, f, int, ch)
 #endif
 
