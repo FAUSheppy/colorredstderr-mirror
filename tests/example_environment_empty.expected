@@ -1,6 +1,6 @@
 write to stderr: 1
 write to stdout
-error!: Success
+error!: Cannot allocate memory
 write to stderr 2write to stdout 2
 
 more on stderr

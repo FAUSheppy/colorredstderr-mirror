@@ -32,7 +32,7 @@ int main(int argc, char **argv unused) {
     printf("write to stdout\n");
     fflush(stdout);
 
-    errno = 0;
+    errno = ENOMEM;
     perror("error!");
 
     write(STDERR_FILENO, "write to stderr 2", 17);
