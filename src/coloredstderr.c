@@ -275,7 +275,7 @@ HOOK_FILE1(int, putchar_unlocked, stdout,
  * part. As writes to stderr are never buffered, __overflow() is always called
  * and everything works fine. This is only a problem if stdout is dupped to
  * stderr (which shouldn't be the case too often). */
-#ifdef HAVE_STRUCT__IO_FILE__FILENO
+#if defined(HAVE_STRUCT__IO_FILE__FILENO) && defined(HAVE___OVERFLOW)
 /* _IO_FILE is glibc's representation of FILE. */
 HOOK_FILE2(int, __overflow, f, _IO_FILE *, f, int, ch)
 #endif
