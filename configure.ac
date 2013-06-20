@@ -59,7 +59,7 @@ AC_CHECK_FUNCS([execvpe])
 dnl These are not in POSIX.
 AC_CHECK_FUNCS([fwrite_unlocked fputs_unlocked fputc_unlocked])
 dnl Internal functions in libc implementations which must be hooked.
-AC_CHECK_FUNCS([__overflow])
+AC_CHECK_FUNCS([__overflow __swbuf])
 
 dnl Thanks to gperftools' configure.ac (https://code.google.com/p/gperftools).
 AC_MSG_CHECKING([for __builtin_expect])

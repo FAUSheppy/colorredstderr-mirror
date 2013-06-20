@@ -59,6 +59,13 @@
 /* In Clang when compiling with hardening flags (fortify) on Debian Wheezy. */
 #undef printf
 #undef fprintf
+/* On FreeBSD (9.1), __swbuf() is used instead of these macros. */
+#ifdef HAVE___SWBUF
+# undef putc
+# undef putc_unlocked
+# undef putchar
+# undef putchar_unlocked
+#endif
 
 
 /* Used by various functions, including debug(). */
@@ -278,6 +285,13 @@ HOOK_FILE1(int, putchar_unlocked, stdout,
 #if defined(HAVE_STRUCT__IO_FILE__FILENO) && defined(HAVE___OVERFLOW)
 /* _IO_FILE is glibc's representation of FILE. */
 HOOK_FILE2(int, __overflow, f, _IO_FILE *, f, int, ch)
+#endif
+/* Same for FreeBSD's libc. However it's more aggressive: The inline writing
+ * and __swbuf() are also used for normal output (e.g. putc()). Writing to
+ * stderr is still fine; it always calls __swbuf() as stderr is always
+ * unbufferd. */
+#ifdef HAVE___SWBUF
+HOOK_FILE2(int, __swbuf, f, int, c, FILE *, f)
 #endif
 
 /* perror(3) */
