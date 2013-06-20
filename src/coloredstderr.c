@@ -53,7 +53,9 @@
  * failures when used in our hook macros below. */
 
 /* In glibc, real fwrite_unlocked() is called in macro. */
-#undef fwrite_unlocked
+#ifdef HAVE_FWRITE_UNLOCKED
+# undef fwrite_unlocked
+#endif
 /* In Clang when compiling with hardening flags (fortify) on Debian Wheezy. */
 #undef printf
 #undef fprintf
@@ -251,12 +253,18 @@ HOOK_FILE4(int, __vfprintf_chk, stream,
            FILE *, stream, int, flag, char const *, format, va_list, ap)
 
 /* unlocked_stdio(3), only functions from above are hooked */
+#ifdef HAVE_FWRITE_UNLOCKED
 HOOK_FILE4(size_t, fwrite_unlocked, stream,
            void const *, ptr, size_t, size, size_t, nmemb, FILE *, stream)
+#endif
+#ifdef HAVE_FPUTS_UNLOCKED
 HOOK_FILE2(int, fputs_unlocked, stream,
            char const *, s, FILE *, stream)
+#endif
+#ifdef HAVE_FPUTC_UNLOCKED
 HOOK_FILE2(int, fputc_unlocked, stream,
            int, c, FILE *, stream)
+#endif
 HOOK_FILE2(int, putc_unlocked, stream,
            int, c, FILE *, stream)
 HOOK_FILE1(int, putchar_unlocked, stdout,
