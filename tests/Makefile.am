@@ -6,8 +6,7 @@ TESTS = test_environment.sh \
         test_exec.sh \
         test_noforce.sh \
         test_redirects.sh \
-        test_simple.sh \
-        test_symbols.sh
+        test_simple.sh
 check_PROGRAMS = example example_exec
 example_SOURCES = example.c
 example_exec_SOURCES = example_exec.c
