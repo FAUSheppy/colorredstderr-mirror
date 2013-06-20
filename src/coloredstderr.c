@@ -277,7 +277,7 @@ HOOK_FILE1(int, putchar_unlocked, stdout,
  * stderr (which shouldn't be the case too often). */
 #ifdef HAVE_STRUCT__IO_FILE__FILENO
 /* _IO_FILE is glibc's representation of FILE. */
-HOOK_FD2(int, __overflow, f->_fileno, _IO_FILE *, f, int, ch)
+HOOK_FILE2(int, __overflow, f, _IO_FILE *, f, int, ch)
 #endif
 
 /* perror(3) */

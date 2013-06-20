@@ -171,12 +171,6 @@
         va_end(ap); \
     }
 
-#define HOOK_FD2(type, name, fd, type1, arg1, type2, arg2) \
-    HOOK_FUNC_DEF2(type, name, type1, arg1, type2, arg2) { \
-        _HOOK_PRE_FD(type, name, fd) \
-        result = real_ ## name(arg1, arg2); \
-        _HOOK_POST_FD(fd) \
-    }
 #define HOOK_FD3(type, name, fd, type1, arg1, type2, arg2, type3, arg3) \
     HOOK_FUNC_DEF3(type, name, type1, arg1, type2, arg2, type3, arg3) { \
         _HOOK_PRE_FD(type, name, fd) \
