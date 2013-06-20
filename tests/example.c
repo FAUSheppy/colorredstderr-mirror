@@ -57,6 +57,7 @@ int main(int argc, char **argv unused) {
     putc_unlocked('\n', stdout);
 
     /* Test invalid stuff. */
+    write(-3, "foo", 3);
     close(-42);
     close(-4711);
     /* Can't test this, results in a segfault with the "normal" fclose(). */

@@ -329,7 +329,11 @@ static int tracked_fds_find_slow(int fd) noinline;
  */
 inline static int tracked_fds_find(int fd) always_inline;
 inline static int tracked_fds_find(int fd) {
-    assert(fd >= 0);
+    /* Invalid file descriptor. No assert() as we're called from the hooked
+     * macro. */
+    if (unlikely(fd < 0)) {
+        return 0;
+    }
 
     if (fd < TRACKFDS_STATIC_COUNT) {
         return tracked_fds[fd];
@@ -339,6 +343,7 @@ inline static int tracked_fds_find(int fd) {
 }
 static int tracked_fds_find_slow(int fd) {
     assert(initialized);
+    assert(fd >= 0);
 
     if (tracked_fds_list_count == 0) {
         return 0;
