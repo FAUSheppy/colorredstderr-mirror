@@ -38,5 +38,6 @@ dist_check_DATA = example.h \
                   example_simple.sh.expected \
                   example_vfork.expected
 
-# Used by lib.sh.
-export EGREP
+# Used by lib.sh. Can't use "export EGREP" because it doesn't work with BSD's
+# make.
+AM_MAKEFLAGS = "EGREP=$(EGREP)"
