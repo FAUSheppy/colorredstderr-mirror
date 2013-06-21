@@ -25,6 +25,7 @@
 #include <errno.h>
 
 #include "../src/compiler.h"
+#include "example.h"
 
 
 int main(int argc, char **argv unused) {
@@ -35,22 +36,21 @@ int main(int argc, char **argv unused) {
     errno = ENOMEM;
     perror("error!");
 
-    write(STDERR_FILENO, "write to stderr 2", 17);
-    write(STDOUT_FILENO, "write to stdout 2", 17);
+    xwrite(STDERR_FILENO, "write to stderr 2", 17);
+    xwrite(STDOUT_FILENO, "write to stdout 2", 17);
 
     fprintf(stderr, "\n");
     fprintf(stdout, "\n");
     fflush(stdout);
 
-    /* Check usage of tracked_fds_list (at least in parts). No error checking
-     * here! */
-    dup2(STDERR_FILENO, 471);
-    dup2(471, 42);
-    write(471, "more on stderr\n", 15);
+    /* Check usage of tracked_fds_list (at least in parts). */
+    xdup2(STDERR_FILENO, 471);
+    xdup2(471, 42);
+    xwrite(471, "more on stderr\n", 15);
     close(471);
-    dup2(STDOUT_FILENO, 471);
-    write(42, "stderr ...\n", 11);
-    write(471, "more on stdout\n", 15);
+    xdup2(STDOUT_FILENO, 471);
+    xwrite(42, "stderr ...\n", 11);
+    xwrite(471, "more on stdout\n", 15);
 
     /* Glibc uses __overflow() for this ... */
     putc_unlocked('x', stderr);

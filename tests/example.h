@@ -36,3 +36,22 @@
         } \
         fflush(stdout); \
     } else
+
+static ssize_t xwrite(int fd, void const *buf, size_t count) {
+    ssize_t result = write(fd, buf, count);
+    if (result == -1) {
+        perror("write");
+        exit(EXIT_FAILURE);
+    }
+    /* Ignore short writes here. Doesn't matter for test cases. */
+    return result;
+}
+
+static int xdup2(int oldfd, int newfd) {
+    int result = dup2(oldfd, newfd);
+    if (result == -1) {
+        perror("dup2");
+        exit(EXIT_FAILURE);
+    }
+    return result;
+}

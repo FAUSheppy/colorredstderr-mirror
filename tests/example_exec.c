@@ -27,6 +27,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "example.h"
 #include "../src/compiler.h"
 
 
@@ -123,7 +124,7 @@ int main(int argc unused, char **argv) {
         printf("\nCHECKING COLORING.\n\n");
         fflush(stdout);
 
-        dup2(2, 3);
+        xdup2(2, 3);
 
         char *args[] = { argv0, NULL };
         char *envp[] = { ldpreload, NULL };
@@ -131,24 +132,24 @@ int main(int argc unused, char **argv) {
         execve(argv[0], args, envp);
         return EXIT_FAILURE;
     } else if (!skip--) {
-        dup2(2, 4);
+        xdup2(2, 4);
 
         execl(argv[0], argv0, NULL);
         return EXIT_FAILURE;
     } else if (!skip--) {
-        dup2(2, 5);
+        xdup2(2, 5);
 
         execlp(argv[0], argv0, NULL);
         return EXIT_FAILURE;
     } else if (!skip--) {
-        dup2(2, 6);
+        xdup2(2, 6);
 
         char *envp[] = { ldpreload, NULL };
 
         execle(argv[0], argv0, NULL, envp);
         return EXIT_FAILURE;
     } else if (!skip--) {
-        dup2(2, 7);
+        xdup2(2, 7);
 
         /* Test closing a few descriptors. */
         close(5);
@@ -159,7 +160,7 @@ int main(int argc unused, char **argv) {
         execv(argv[0], args);
         return EXIT_FAILURE;
     } else if (!skip--) {
-        dup2(2, 8);
+        xdup2(2, 8);
 
         /* And a few more. */
         close(7);
@@ -177,7 +178,7 @@ int main(int argc unused, char **argv) {
         close(3);
         close(8);
 
-        dup2(2, 5);
+        xdup2(2, 5);
 
         char *args[] = { argv0, NULL };
         char *envp[] = { ldpreload, "COLORED_STDERR_FDS=5,", NULL };
@@ -188,7 +189,7 @@ int main(int argc unused, char **argv) {
         char *args[] = { argv0, NULL };
         char *envp[] = { ldpreload, NULL };
 
-        dup2(5, 6);
+        xdup2(5, 6);
         close(5);
 
         execve(argv[0], args, envp);
