@@ -406,7 +406,7 @@ HOOK_FUNC_DEF1(int, dup, int, oldfd) {
     DLSYM_FUNCTION(real_dup, "dup");
 
     newfd = real_dup(oldfd);
-    if (newfd != -1) {
+    if (newfd > -1) {
         dup_fd(oldfd, newfd);
     }
 
@@ -417,7 +417,7 @@ HOOK_FUNC_DEF2(int, dup2, int, oldfd, int, newfd) {
     DLSYM_FUNCTION(real_dup2, "dup2");
 
     newfd = real_dup2(oldfd, newfd);
-    if (newfd != -1) {
+    if (newfd > -1) {
         dup_fd(oldfd, newfd);
     }
 
@@ -428,7 +428,7 @@ HOOK_FUNC_DEF3(int, dup3, int, oldfd, int, newfd, int, flags) {
     DLSYM_FUNCTION(real_dup3, "dup3");
 
     newfd = real_dup3(oldfd, newfd, flags);
-    if (newfd != -1) {
+    if (newfd > -1) {
         dup_fd(oldfd, newfd);
     }
 
@@ -460,7 +460,7 @@ HOOK_FUNC_VAR_DEF2(int, fcntl, int, fd, int, cmd /*, ... */) {
     va_end(ap);
 
     /* We only care about duping fds. */
-    if (cmd == F_DUPFD && result != -1) {
+    if (cmd == F_DUPFD && result > -1) {
         dup_fd(fd, result);
     }
 
