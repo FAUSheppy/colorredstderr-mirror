@@ -72,8 +72,9 @@ static int init_tracked_fds_list(size_t count) {
 /* Load tracked file descriptors from the environment. The environment is used
  * to pass the information to child processes.
  *
- * ENV_NAME_FDS has the following format: Each descriptor as string followed
- * by a comma; there's a trailing comma. Example: "2,4,". */
+ * ENV_NAME_FDS and ENV_NAME_PRIVATE_FDS have the following format: Each
+ * descriptor as string followed by a comma; there's a trailing comma.
+ * Example: "2,4,". */
 static void init_from_environment(void) {
 #ifdef DEBUG
     debug("init_from_environment()\t\t[%d]\n", getpid());
@@ -92,14 +93,23 @@ static void init_from_environment(void) {
         force_write_to_non_tty = 1;
     }
 
+    /* Prefer user defined list of file descriptors, fall back to file
+     * descriptors passed through the environment from the parent process. */
     env = getenv(ENV_NAME_FDS);
+    if (env) {
+        used_fds_set_by_user = 1;
+    } else {
+        env = getenv(ENV_NAME_PRIVATE_FDS);
+    }
     if (!env) {
         errno = saved_errno;
         return;
     }
 #ifdef DEBUG
     debug("  getenv(\"%s\"): \"%s\"\n", ENV_NAME_FDS, env);
+    debug("  getenv(\"%s\"): \"%s\"\n", ENV_NAME_PRIVATE_FDS, env);
 #endif
+
     /* Environment must be treated read-only. */
     char env_copy[strlen(env) + 1];
     strcpy(env_copy, env);
@@ -225,16 +235,29 @@ static void update_environment(void) {
         return;
     }
 
+    int saved_errno = errno;
+
     char env[update_environment_buffer_size()];
     env[0] = 0;
 
     update_environment_buffer(env);
 
 #if 0
-    debug("    setenv(\"%s\", \"%s\", 1)\n", ENV_NAME_FDS, env);
+    debug("    setenv(\"%s\", \"%s\", 1)\n", ENV_NAME_PRIVATE_FDS, env);
 #endif
+    setenv(ENV_NAME_PRIVATE_FDS, env, 1 /* overwrite */);
 
-    setenv(ENV_NAME_FDS, env, 1 /* overwrite */);
+    /* Child processes must use ENV_NAME_PRIVATE_FDS to get the updated list
+     * of tracked file descriptors, not the static list provided by the user
+     * in ENV_NAME_FDS.
+     *
+     * But only remove it if the static list in ENV_NAME_FDS was loaded by
+     * init_from_environment() and merged into ENV_NAME_PRIVATE_FDS. */
+    if (used_fds_set_by_user) {
+        unsetenv(ENV_NAME_FDS);
+    }
+
+    errno = saved_errno;
 }
 
 

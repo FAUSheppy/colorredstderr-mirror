@@ -40,7 +40,10 @@ fi
 LC_ALL=C
 unset LANGUAGE
 
-# Set default COLORED_STDERR_FDS value.
+# Clear user defined variables.
+unset COLORED_STDERR_FDS
+unset COLORED_STDERR_FORCE_WRITE
+# Set default COLORED_STDERR_PRIVATE_FDS value.
 fds=2,
 
 
@@ -78,9 +81,9 @@ run_test() {
     (
         # Standard setup.
         LD_PRELOAD="$library"
-        COLORED_STDERR_FDS="$fds"
+        COLORED_STDERR_PRIVATE_FDS="$fds"
         export LD_PRELOAD
-        export COLORED_STDERR_FDS
+        export COLORED_STDERR_PRIVATE_FDS
 
         # Change pre/post strings for simpler testing.
         COLORED_STDERR_PRE='>STDERR>'

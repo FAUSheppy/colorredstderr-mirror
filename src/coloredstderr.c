@@ -78,6 +78,9 @@ static size_t (*real_fwrite)(void const *, size_t, size_t, FILE *);
 static int initialized;
 /* Force hooked writes even when not writing to a tty. Used for tests. */
 static int force_write_to_non_tty;
+/* Was ENV_NAME_FDS found and used when init_from_environment() was called?
+ * This is not true if the process set it manually after initialization. */
+static int used_fds_set_by_user;
 
 
 #include "constants.h"
@@ -508,34 +511,23 @@ pid_t vfork(void) {
 
 /* Hook execve() and the other exec*() functions. Some shells use exec*() with
  * a custom environment which doesn't necessarily contain our updates to
- * ENV_NAME_FDS. It's also faster to update the environment only when
- * necessary, right before the exec() to pass it to the new process. */
+ * ENV_NAME_PRIVATE_FDS. It's also faster to update the environment only when
+ * necessary, right before the exec(), to pass it to the new program. */
 
 /* int execve(char const *, char * const [], char * const []) */
 HOOK_FUNC_DEF3(int, execve, char const *, filename, char * const *, argv, char * const *, env) {
     DLSYM_FUNCTION(real_execve, "execve");
 
-    int found = 0;
-    size_t index = 0;
-
-    /* Count arguments and search for existing ENV_NAME_FDS environment
-     * variable. */
+    /* Count environment variables. */
     size_t count = 0;
     char * const *x = env;
-    while (*x) {
-        if (!strncmp(*x, ENV_NAME_FDS "=", strlen(ENV_NAME_FDS) + 1)) {
-            found = 1;
-            index = count;
-        }
-
-        x++;
+    while (*x++) {
         count++;
     }
     /* Terminating NULL. */
     count++;
 
     char *env_copy[count + 1 /* space for our new entry if necessary */];
-    memcpy(env_copy, env, count * sizeof(char *));
 
     /* Make sure the information from the environment is loaded. We can't just
      * do nothing (like update_environment()) because the caller might pass a
@@ -544,17 +536,40 @@ HOOK_FUNC_DEF3(int, execve, char const *, filename, char * const *, argv, char *
         init_from_environment();
     }
 
-    char fds_env[strlen(ENV_NAME_FDS) + 1 + update_environment_buffer_size()];
-    strcpy(fds_env, ENV_NAME_FDS "=");
-    update_environment_buffer(fds_env + strlen(ENV_NAME_FDS) + 1);
+    char fds_env[strlen(ENV_NAME_PRIVATE_FDS)
+                 + 1 + update_environment_buffer_size()];
+    strcpy(fds_env, ENV_NAME_PRIVATE_FDS "=");
+    update_environment_buffer(fds_env + strlen(ENV_NAME_PRIVATE_FDS) + 1);
 
-    if (found) {
-        env_copy[index] = fds_env;
-    } else {
-        /* If the process removed ENV_NAME_FDS from the environment, re-add
-         * it. */
-        env_copy[count-1] = fds_env;
-        env_copy[count] = NULL;
+    int found = 0;
+    char **x_copy = env_copy;
+
+    /* Copy the environment manually; allows skipping elements. */
+    x = env;
+    while ((*x_copy = *x)) {
+        /* Remove ENV_NAME_FDS if we've already used its value. The new
+         * program must use the updated list from ENV_NAME_PRIVATE_FDS. */
+        if (used_fds_set_by_user
+                && !strncmp(*x, ENV_NAME_FDS "=", strlen(ENV_NAME_FDS) + 1)) {
+            x++;
+            continue;
+        /* Update ENV_NAME_PRIVATE_FDS. */
+        } else if (!strncmp(*x, ENV_NAME_PRIVATE_FDS "=",
+                            strlen(ENV_NAME_PRIVATE_FDS) + 1)) {
+            *x_copy = fds_env;
+            found = 1;
+        }
+
+        x++;
+        x_copy++;
+    }
+    /* The loop "condition" NULL-terminates env_copy. */
+
+    if (!found) {
+        /* If the process removed ENV_NAME_PRIVATE_FDS from the environment,
+         * re-add it. */
+        *x_copy++ = fds_env;
+        *x_copy++ = NULL;
     }
 
     return real_execve(filename, argv, env_copy);

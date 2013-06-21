@@ -95,6 +95,10 @@ The following additional environment variables are available:
   terminal, e.g. when writing to a file. By default, only writes to a terminal
   are colored.
 
+All environment variables starting with 'COLORED_STDERR_PRIVATE_*' are
+internal variables used by the implementation and should not be set manually.
+See the source for details.
+
 
 To set custom colors as pre/post strings you can use the `$''` feature of Bash
 and Zsh:

@@ -169,9 +169,38 @@ int main(int argc unused, char **argv) {
 
         execvp(argv[0], args);
         return EXIT_FAILURE;
-    } else {
+
+    /* Test handling of COLORED_STDERR_FDS. */
+
+    } else if (!skip--) {
+        /* And the rest. */
         close(3);
         close(8);
+
+        dup2(2, 5);
+
+        char *args[] = { argv0, NULL };
+        char *envp[] = { ldpreload, "COLORED_STDERR_FDS=5,", NULL };
+
+        execve(argv[0], args, envp);
+        return EXIT_FAILURE;
+    } else if (!skip--) {
+        char *args[] = { argv0, NULL };
+        char *envp[] = { ldpreload, NULL };
+
+        dup2(5, 6);
+        close(5);
+
+        execve(argv[0], args, envp);
+        return EXIT_FAILURE;
+    } else if (!skip--) {
+        close(6);
+
+        char *args[] = { argv0, NULL };
+        setenv("COLORED_STDERR_FDS", "2,", 1);
+
+        execv(argv[0], args);
+        return EXIT_FAILURE;
     }
 
 
@@ -292,13 +321,13 @@ int main(int argc unused, char **argv) {
     } else if (!skip--) {
         puts("argv[0] = |./example_exec|");
         puts("environ[0] = |TEST=54|");
-        puts("environ[2] = |COLORED_STDERR_FDS=2,|");
+        puts("environ[2] = |COLORED_STDERR_PRIVATE_FDS=2,|");
         puts("");
         puts("argv[0] = |./example_exec|");
         puts("argv[1] = |foo|");
         puts("argv[2] = |bar|");
         puts("environ[0] = |TEST=55|");
-        puts("environ[2] = |COLORED_STDERR_FDS=2,|");
+        puts("environ[2] = |COLORED_STDERR_PRIVATE_FDS=2,|");
         puts("");
 #endif
     }

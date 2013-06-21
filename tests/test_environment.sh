@@ -18,7 +18,7 @@
 test "x$srcdir" = x && srcdir=.
 . "$srcdir/lib.sh"
 
-# Test unexpected values for COLORED_STDERR_FDS environment variable.
+# Test unexpected values for COLORED_STDERR_PRIVATE_FDS environment variable.
 
 # Empty fields.
 fds=
@@ -44,3 +44,18 @@ test_program_subshell example example_environment
 fds=-20,-30,2,-1,
 test_program          example example_environment
 test_program_subshell example example_environment
+
+# Test COLORED_STDERR_FDS overwrites COLORED_STDERR_PRIVATE_FDS. Additional
+# tests in example_exec.
+
+fds=
+COLORED_STDERR_FDS=2,
+export COLORED_STDERR_FDS
+test_program          example example_environment
+test_program_subshell example example_environment
+
+fds=2,
+COLORED_STDERR_FDS=
+export COLORED_STDERR_FDS
+test_program          example example_environment_empty
+test_program_subshell example example_environment_empty
