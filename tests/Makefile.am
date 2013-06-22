@@ -6,8 +6,9 @@ TESTS = test_environment.sh \
         test_exec.sh \
         test_noforce.sh \
         test_redirects.sh \
-        test_simple.sh
-check_PROGRAMS = example example_exec
+        test_simple.sh \
+        test_stdio.sh
+check_PROGRAMS = example example_exec example_stdio
 
 if HAVE_ERR_H
     TESTS += test_err.sh
@@ -36,6 +37,7 @@ dist_check_DATA = example.h \
                   example_redirects.sh.expected \
                   example_simple.sh \
                   example_simple.sh.expected \
+                  example_stdio.expected \
                   example_vfork.expected
 
 # Used by lib.sh. Can't use "export EGREP" because it doesn't work with BSD's

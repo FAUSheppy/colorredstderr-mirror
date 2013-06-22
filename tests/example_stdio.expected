@@ -1,0 +1,28 @@
+>STDERR>write()<STDERR<
+>STDERR>fwrite()<STDERR<
+>STDERR>fputs()<STDERR<
+>STDERR>a<STDERR<
+>STDERR>b<STDERR<
+>STDERR>c<STDERR<
+>STDERR>puts()
+<STDERR<
+>STDERR>printf() [1]<STDERR<
+>STDERR>fprintf() [1]<STDERR<
+>STDERR>vprintf() [1]<STDERR<
+>STDERR>vfprintf() [1]<STDERR<
+>STDERR>fwrite_unlocked()<STDERR<
+>STDERR>fputs_unlocked()<STDERR<
+x
+y
+z
+>STDERR>write()<STDERR<
+>STDERR>fwrite()<STDERR<
+>STDERR>fputs()<STDERR<
+>STDERR>a<STDERR<
+>STDERR>b<STDERR<
+>STDERR>fprintf() [1]<STDERR<
+>STDERR>vfprintf() [1]<STDERR<
+>STDERR>fwrite_unlocked()<STDERR<
+>STDERR>fputs_unlocked()<STDERR<
+>STDERR>x<STDERR<
+>STDERR>y<STDERR<

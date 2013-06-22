@@ -137,6 +137,14 @@ doesn't exist it's created. An existing file isn't overwritten, but the
 warnings are appended at the end.
 
 
+KNOWN ISSUES
+------------
+
+- `{fputc,putc,putchar}_unlocked()` are not hooked when writing to stdout
+  (which might be redirected to stderr). Can't be fixed as the compiler
+  inlines the code into the program without calling any function.
+
+
 BUGS
 ----
 

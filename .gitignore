@@ -29,6 +29,8 @@
 /tests/example_error.o
 /tests/example_exec
 /tests/example_exec.o
+/tests/example_stdio
+/tests/example_stdio.o
 /tests/example_vfork
 /tests/example_vfork.o
 /tests/test_environment.sh.log
@@ -47,6 +49,8 @@
 /tests/test_redirects.sh.trs
 /tests/test_simple.sh.log
 /tests/test_simple.sh.trs
+/tests/test_stdio.sh.log
+/tests/test_stdio.sh.trs
 /tests/test_symbols.sh.log
 /tests/test_symbols.sh.trs
 /tests/test_vfork.sh.log
