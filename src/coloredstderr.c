@@ -646,10 +646,16 @@ HOOK_FUNC_DEF2(int, execvp, char const *, file, char * const *, argv) {
 #ifdef HAVE_EXECVPE
 extern char **environ;
 int execvpe(char const *file, char * const argv[], char * const envp[]) {
+    int result;
+    char **old_environ = environ;
+
     /* Fake the environment so we can reuse execvp(). */
     environ = (char **)envp;
 
     /* execvp() updates the environment. */
-    return execvp(file, argv);
+    result = execvp(file, argv);
+
+    environ = old_environ;
+    return result;
 }
 #endif
