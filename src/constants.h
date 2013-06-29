@@ -28,8 +28,8 @@
 #define ENV_NAME_PRIVATE_FDS "COLORED_STDERR_PRIVATE_FDS"
 
 /* Strings written before/after each matched function. */
-#define DEFAULT_PRE_STRING  "\033[91m"
-#define DEFAULT_POST_STRING "\033[0m"
+#define DEFAULT_PRE_STRING  "\033[31m" /* red */
+#define DEFAULT_POST_STRING "\033[0m"  /* default */
 
 /* Number of elements to allocate statically. Highest descriptor observed in
  * normal use was 255 (by bash), which yielded this limit to prevent

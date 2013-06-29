@@ -85,8 +85,7 @@ A default setup could look like this:
 The following additional environment variables are available:
 
 - 'COLORED_STDERR_PRE'
-  String to write before each write to stderr, defaults to "\033[91m" (bright
-  red).
+  String to write before each write to stderr, defaults to "\033[31m" (red).
 - 'COLORED_STDERR_POST'
   String to write after each write to stderr, defaults to "\033[0m" (reset
   color).
