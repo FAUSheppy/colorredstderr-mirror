@@ -46,7 +46,7 @@ Then either install the library with `make install` or just copy it from
 
 *Important:* If you install `libcoloredstderr.so` manually, make sure _not_ to
 use plain `cp` to overwrite an existing `libcoloredstderr.so` file which is in
-use! Doing so will crash all processes which were started with 'LD_PRELOAD'
+use! Doing so will crash most processes which were started with 'LD_PRELOAD'
 set to this file. This is not a bug in coloredstderr, but a general problem.
 `cp` truncates the file which causes the `mmap()` ed library to be in an
 inconsistent state causing a segmentation fault when using any functions of
@@ -120,15 +120,15 @@ DEBUG
 To enable debug mode, configure coloredstderr with '--enable-debug'.
 
 *Important:* Debug mode enables `assert()`s in the code which might abort the
-process if an error condition is detected!
+process using 'LD_PRELOAD' if an error condition is detected!
 
 Debug mode is slower than normal mode. To log only warnings without the
 overhead of debug mode use '--enable-warnings'. `assert()`s are not enabled
 with '--enable-warnings', so it's safe to use.
 
-Debug messages are written to the file `colored_stderr_debug_log.txt` in the
-current working directory _if_ it exists. If it exists debug messages are
-appended. Be careful, this file might grow very quickly.
+Debug messages are appended to the file `colored_stderr_debug_log.txt` in the
+current working directory _if_ it exists. Be careful, this file might grow
+very quickly.
 
 *Important:* Warnings are written to `$HOME/colored_stderr_warning_log.txt`
 even if it _does not_ exist (only if debug or warning mode is enabled)! If it
