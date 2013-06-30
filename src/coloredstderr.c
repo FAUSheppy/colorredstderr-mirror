@@ -238,6 +238,14 @@ HOOK_FILE2(int, fputc, stream,
            int, c, FILE *, stream)
 HOOK_FILE2(int, putc, stream,
            int, c, FILE *, stream)
+/* The glibc uses a macro for putc() which expands to _IO_putc(). However
+ * sometimes the raw putc() is used as well, not sure why. Make sure to hook
+ * it too. */
+#ifdef putc
+# undef putc
+HOOK_FILE2(int, putc, stream,
+           int, c, FILE *, stream)
+#endif
 HOOK_FILE1(int, putchar, stdout,
            int, c)
 HOOK_FILE1(int, puts, stdout,
