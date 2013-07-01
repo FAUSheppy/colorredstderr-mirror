@@ -22,4 +22,5 @@ test "x$srcdir" = x && srcdir=.
 # Make sure we don't write to non-ttys by default.
 force_write=
 test_script example_noforce.sh
+test_script_subshell example_noforce.sh
 force_write=1
