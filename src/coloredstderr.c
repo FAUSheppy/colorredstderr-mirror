@@ -81,6 +81,12 @@ static int force_write_to_non_tty;
 /* Was ENV_NAME_FDS found and used when init_from_environment() was called?
  * This is not true if the process set it manually after initialization. */
 static int used_fds_set_by_user;
+/* Was any of our handle_*_pre()/handle_*_post() functions called recursively?
+ * If so don't print the pre/post string for the recursive calls. This is
+ * necessary on some systems (e.g. FreeBSD 9.1) which call multiple hooked
+ * functions while printing a string (e.g. a FILE * and a fd hook function is
+ * called). */
+static int handle_recursive;
 
 
 #include "constants.h"
@@ -181,6 +187,10 @@ static void handle_file_pre(FILE *stream) noinline;
 static void handle_file_post(FILE *stream) noinline;
 
 static void handle_fd_pre(int fd) {
+    if (handle_recursive++ > 0) {
+        return;
+    }
+
     int saved_errno = errno;
 
     if (unlikely(!pre_string || !post_string)) {
@@ -193,6 +203,10 @@ static void handle_fd_pre(int fd) {
     errno = saved_errno;
 }
 static void handle_fd_post(int fd) {
+    if (--handle_recursive > 0) {
+        return;
+    }
+
     int saved_errno = errno;
 
     /* write() already loaded above in handle_fd_pre(). */
@@ -202,6 +216,10 @@ static void handle_fd_post(int fd) {
 }
 
 static void handle_file_pre(FILE *stream) {
+    if (handle_recursive++ > 0) {
+        return;
+    }
+
     int saved_errno = errno;
 
     if (unlikely(!pre_string || !post_string)) {
@@ -214,6 +232,10 @@ static void handle_file_pre(FILE *stream) {
     errno = saved_errno;
 }
 static void handle_file_post(FILE *stream) {
+    if (--handle_recursive > 0) {
+        return;
+    }
+
     int saved_errno = errno;
 
     /* fwrite() already loaded above in handle_file_pre(). */
