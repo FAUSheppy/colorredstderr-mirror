@@ -7,3 +7,4 @@ write to stderr 2<STDERR<write to stdout 2>STDERR>
 stderr ...
 <STDERR<more on stdout
 >STDERR>x<STDERR<
+EOF

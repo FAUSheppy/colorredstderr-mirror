@@ -9,3 +9,4 @@
 >STDERR>example_err: warning: message: Cannot allocate memory
 example_err: warning: message
 <STDERR<
+EOF

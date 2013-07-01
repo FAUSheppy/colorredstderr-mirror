@@ -99,6 +99,10 @@ run_test() {
         $valgrind_cmd "$@" "$testcase" > "$output" 2>&1
     )
 
+    # Some sed implementations (e.g. on FreeBSD 9.1) always append a trailing
+    # newline. Add "EOF" to detect if the real output had one.
+    echo EOF >> "$output"
+
     # Merge continuous regions of colored output. The exact calls don't matter
     # as long as the output is colored.
     sed 's/<STDERR<>STDERR>//g' < "$output" > "$output.tmp"

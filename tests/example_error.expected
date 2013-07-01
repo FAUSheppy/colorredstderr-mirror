@@ -7,4 +7,4 @@ PROG<message>
 PROGfile:42: <message>
 PROG<message>: Cannot allocate memory
 PROGfile:42: <message>: Cannot allocate memory
-<STDERR<
+<STDERR<EOF

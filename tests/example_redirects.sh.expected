@@ -5,4 +5,4 @@
 write to stderr which gets redirected to stdout
 write to stdout 3
 >STDERR>another redirect to stderr
-<STDERR<
+<STDERR<EOF

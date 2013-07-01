@@ -123,3 +123,4 @@ environ[0] = |COLORED_STDERR_PRIVATE_FDS=2,|
 environ[1] = |TEST=55|
 
 Done.
+EOF
