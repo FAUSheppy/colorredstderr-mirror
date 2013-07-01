@@ -7,5 +7,5 @@
 >STDERR>example_err: error: message
 <STDERR<exit code: 1
 >STDERR>example_err: warning: message: Cannot allocate memory
-<STDERR<>STDERR>example_err: warning: message
+example_err: warning: message
 <STDERR<

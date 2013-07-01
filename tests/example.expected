@@ -1,9 +1,9 @@
 >STDERR>write to stderr: 1
 <STDERR<write to stdout
 >STDERR>error!: Cannot allocate memory
-<STDERR<>STDERR>write to stderr 2<STDERR<write to stdout 2>STDERR>
+write to stderr 2<STDERR<write to stdout 2>STDERR>
 <STDERR<
 >STDERR>more on stderr
-<STDERR<>STDERR>stderr ...
+stderr ...
 <STDERR<more on stdout
 >STDERR>x<STDERR<

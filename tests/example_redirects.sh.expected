@@ -1,8 +1,8 @@
->STDERR>write<STDERR<>STDERR> <STDERR<>STDERR>to<STDERR<>STDERR> <STDERR<>STDERR>stderr<STDERR<>STDERR> <STDERR<>STDERR>1<STDERR<>STDERR>
+>STDERR>write to stderr 1
 <STDERR<write to stdout 1
->STDERR>write<STDERR<>STDERR> <STDERR<>STDERR>to<STDERR<>STDERR> <STDERR<>STDERR>stdout<STDERR<>STDERR> <STDERR<>STDERR>which<STDERR<>STDERR> <STDERR<>STDERR>gets<STDERR<>STDERR> <STDERR<>STDERR>redirected<STDERR<>STDERR> <STDERR<>STDERR>to<STDERR<>STDERR> <STDERR<>STDERR>stderr<STDERR<>STDERR>
+>STDERR>write to stdout which gets redirected to stderr
 <STDERR<write to stdout 2
 write to stderr which gets redirected to stdout
 write to stdout 3
->STDERR>another<STDERR<>STDERR> <STDERR<>STDERR>redirect<STDERR<>STDERR> <STDERR<>STDERR>to<STDERR<>STDERR> <STDERR<>STDERR>stderr<STDERR<>STDERR>
+>STDERR>another redirect to stderr
 <STDERR<

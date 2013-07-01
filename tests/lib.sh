@@ -99,6 +99,11 @@ run_test() {
         $valgrind_cmd "$@" "$testcase" > "$output" 2>&1
     )
 
+    # Merge continuous regions of colored output. The exact calls don't matter
+    # as long as the output is colored.
+    sed 's/<STDERR<>STDERR>//g' < "$output" > "$output.tmp"
+    mv "$output.tmp" "$output"
+
     diff -u "$expected" "$output" \
         || die 'failed!'
     rm "$output"
@@ -118,7 +123,7 @@ test_script() {
     run_test "$srcdir/$testcase" "$srcdir/$expected.expected" "$@"
 }
 test_script_subshell() {
-    test_script "$1" "$2" bash -c 'bash $1' ''
+    test_script "$1" "$2" sh -c 'sh $1' ''
 }
 test_program() {
     testcase="$1"

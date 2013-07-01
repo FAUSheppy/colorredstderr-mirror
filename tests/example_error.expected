@@ -1,10 +1,10 @@
->STDERR>./example_error:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>
-<STDERR<>STDERR>./example_error:<STDERR<>STDERR>file:42:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>
-<STDERR<>STDERR>./example_error:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>: Cannot allocate memory<STDERR<>STDERR>
-<STDERR<>STDERR>./example_error:<STDERR<>STDERR>file:42:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>: Cannot allocate memory<STDERR<>STDERR>
-<STDERR<>STDERR>./example_error:<STDERR<>STDERR>file:42:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>: Cannot allocate memory<STDERR<>STDERR>
-<STDERR<>STDERR>PROG<STDERR<>STDERR><message><STDERR<>STDERR>
-<STDERR<>STDERR>PROG<STDERR<>STDERR>file:42:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>
-<STDERR<>STDERR>PROG<STDERR<>STDERR><message><STDERR<>STDERR>: Cannot allocate memory<STDERR<>STDERR>
-<STDERR<>STDERR>PROG<STDERR<>STDERR>file:42:<STDERR<>STDERR> <STDERR<>STDERR><message><STDERR<>STDERR>: Cannot allocate memory<STDERR<>STDERR>
+>STDERR>./example_error: <message>
+./example_error:file:42: <message>
+./example_error: <message>: Cannot allocate memory
+./example_error:file:42: <message>: Cannot allocate memory
+./example_error:file:42: <message>: Cannot allocate memory
+PROG<message>
+PROGfile:42: <message>
+PROG<message>: Cannot allocate memory
+PROGfile:42: <message>: Cannot allocate memory
 <STDERR<

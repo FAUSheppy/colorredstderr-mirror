@@ -1,3 +1,3 @@
 write to stdout
->STDERR>write<STDERR<>STDERR> <STDERR<>STDERR>to<STDERR<>STDERR> <STDERR<>STDERR>stderr<STDERR<>STDERR>
+>STDERR>write to stderr
 <STDERR<write to stdout without newline>STDERR>write to stderr without newline<STDERR<
