@@ -59,6 +59,9 @@ static int find_magic_run_number(char *argv0, int *number) {
     return 1;
 }
 
+static int cmp(void const *a, void const *b) {
+    return strcmp(*(char * const *)a, *(char * const *)b);
+}
 static void dump(char *argv[]) {
     size_t i;
 
@@ -66,14 +69,23 @@ static void dump(char *argv[]) {
     while (*argv) {
         printf("argv[%zu] = |%s|\n", i++, *argv++);
     }
+
+    /* Order of environment variables is not defined, sort them for consistent
+     * test results. */
     i = 0;
     char **env = environ;
+    while (*env++) {
+        i++;
+    }
+    qsort(environ, i, sizeof(*env), cmp);
+
+    i = 0;
+    env = environ;
     while (*env) {
         /* Skip LD_PRELOAD which contains system dependent values. */
         if (strncmp(*env, "LD_PRELOAD=", 11)) {
-            printf("environ[%zu] = |%s|\n", i, *env);
+            printf("environ[%zu] = |%s|\n", i++, *env);
         }
-        i++;
         env++;
     }
     printf("\n");
@@ -321,14 +333,14 @@ int main(int argc unused, char **argv) {
     /* Fake output to let the test pass. */
     } else if (!skip--) {
         puts("argv[0] = |./example_exec|");
-        puts("environ[0] = |TEST=54|");
-        puts("environ[2] = |COLORED_STDERR_PRIVATE_FDS=2,|");
+        puts("environ[0] = |COLORED_STDERR_PRIVATE_FDS=2,|");
+        puts("environ[1] = |TEST=54|");
         puts("");
         puts("argv[0] = |./example_exec|");
         puts("argv[1] = |foo|");
         puts("argv[2] = |bar|");
-        puts("environ[0] = |TEST=55|");
-        puts("environ[2] = |COLORED_STDERR_PRIVATE_FDS=2,|");
+        puts("environ[0] = |COLORED_STDERR_PRIVATE_FDS=2,|");
+        puts("environ[1] = |TEST=55|");
         puts("");
 #endif
     }
