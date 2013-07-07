@@ -83,6 +83,8 @@ static void init_from_environment(void) {
 
     int saved_errno = errno;
 
+    assert(!initialized);
+
     initialized = 1;
     tracked_fds_list_count = 0;
 
