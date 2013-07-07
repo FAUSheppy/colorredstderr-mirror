@@ -157,6 +157,8 @@ KNOWN ISSUES
   correctly (no inlining), but the test is designed for GNU/Linux.
 - 'COLORED_STDERR_IGNORED_BINARIES' requires the `/proc` file system.
   Suggestions welcome.
+- Output of `strace` is not always colored correctly as the output from
+  `coloredstderr` is traced and displayed as well.
 
 
 BUGS
