@@ -30,7 +30,8 @@ DEPENDENCIES
 ------------
 
 - C99 compiler (variable length arrays)
-- dynamic linker/loader which supports 'LD_PRELOAD' (e.g. GNU/Linux's ld.so)
+- dynamic linker/loader which supports 'LD_PRELOAD' (e.g. GNU/Linux's or
+  FreeBSD's ld.so)
 
 
 INSTALLATION
@@ -113,7 +114,7 @@ Or to be more compatible you can use the following which should work in any
 Bourne shell:
 
     esc=`printf '\033'`
-    COLORED_STDERR_PRE="${esc}[91m" # red
+    COLORED_STDERR_PRE="${esc}[91m" # bright red
     COLORED_STDERR_POST="${esc}[0m" # default
     export COLORED_STDERR_PRE COLORED_STDERR_POST
 
@@ -149,11 +150,12 @@ warnings are appended at the end.
 KNOWN ISSUES
 ------------
 
-- `{fputc,putc,putchar}_unlocked()` are not hooked when writing to stdout
-  (which might be redirected to stderr). Can't be fixed as the compiler
+- `{fputc,putc,putchar}_unlocked()` are not hooked with glibc when writing to
+  stdout (which might be redirected to stderr). Can't be fixed as the compiler
   inlines the code into the program without calling any function.
-- Test `test_stdio.sh` fails for this reason on FreeBSD.
-- 'COLORED_STDERR_IGNORED_BINARIES' requries the `/proc` file system.
+- Test `test_stdio.sh` fails on FreeBSD because it does handle the above
+  correctly (no inlining), but the test is designed for GNU/Linux.
+- 'COLORED_STDERR_IGNORED_BINARIES' requires the `/proc` file system.
   Suggestions welcome.
 
 
