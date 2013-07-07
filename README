@@ -93,6 +93,10 @@ The following additional environment variables are available:
   If set to an non-empty value add pre/post strings even when not writing to a
   terminal, e.g. when writing to a file. By default, only writes to a terminal
   are colored.
+- 'COLORED_STDERR_IGNORED_BINARIES'
+  Comma separated list of binary names/paths which should not be tracked
+  (including their children). Useful for `reset` which writes to the terminal
+  but fails to work if the output is colored. See below for an example.
 
 All environment variables starting with 'COLORED_STDERR_PRIVATE_*' are
 internal variables used by the implementation and should not be set manually.
@@ -112,6 +116,12 @@ Bourne shell:
     COLORED_STDERR_PRE="${esc}[91m" # red
     COLORED_STDERR_POST="${esc}[0m" # default
     export COLORED_STDERR_PRE COLORED_STDERR_POST
+
+Fix `reset`; its writes to the terminal must be unaltered. `reset` is
+symbolic-link to `tset` on some systems, adapt as necessary:
+
+    COLORED_STDERR_IGNORED_BINARIES=/usr/bin/tset
+    export COLORED_STDERR_IGNORED_BINARIES
 
 
 DEBUG
@@ -143,6 +153,8 @@ KNOWN ISSUES
   (which might be redirected to stderr). Can't be fixed as the compiler
   inlines the code into the program without calling any function.
 - Test `test_stdio.sh` fails for this reason on FreeBSD.
+- 'COLORED_STDERR_IGNORED_BINARIES' requries the `/proc` file system.
+  Suggestions welcome.
 
 
 BUGS

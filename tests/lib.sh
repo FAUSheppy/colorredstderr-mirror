@@ -20,6 +20,7 @@ set -e
 
 # Allow running the script directly without running `make check`.
 test "x$builddir" = x && builddir=.
+test "x$abs_builddir" = x && abs_builddir="`pwd`"
 test "x$EGREP" = x && EGREP='grep -E'
 
 # The tests fail if running under coloredstderr because the tests redirect

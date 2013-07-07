@@ -50,6 +50,36 @@ static void tracked_fds_debug(void) {
 }
 #endif
 
+/* Check if filename occurs in the comma-separated list ignore. */
+static int is_program_ignored(char const *filename, char const *ignore) {
+    size_t length;
+    size_t filename_length = strlen(filename);
+
+#ifdef DEBUG
+    debug("  is_program_ignored(\"%s\", \"%s\")\n", filename, ignore);
+#endif
+
+    for (; *ignore; ignore += length) {
+        while (*ignore == ',') {
+            ignore++;
+        }
+
+        length = strcspn(ignore, ",");
+        if (length == 0) {
+            break;
+        }
+
+        if (length != filename_length) {
+            continue;
+        }
+        if (!strncmp(filename, ignore, length)) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 static int init_tracked_fds_list(size_t count) {
     assert(count > 0);
 
@@ -87,6 +117,22 @@ static void init_from_environment(void) {
 
     initialized = 1;
     tracked_fds_list_count = 0;
+
+    /* Don't color writes to stderr for this binary (and its children) if it's
+     * contained in the comma-separated list in ENV_NAME_IGNORED_BINARIES. */
+    env = getenv(ENV_NAME_IGNORED_BINARIES);
+    if (env) {
+        char path[512];
+
+        /* TODO: Don't require /proc/. */
+        ssize_t written = readlink("/proc/self/exe", path, sizeof(path) - 1);
+        if (written > 0) {
+            path[written] = 0; /* readlink() does not null-terminate! */
+            if (is_program_ignored(path, env)) {
+                return;
+            }
+        }
+    }
 
     /* If ENV_NAME_FORCE_WRITE is set and not empty, allow writes to a non-tty
      * device. Use with care! Mainly used for the test suite. */

@@ -59,3 +59,20 @@ COLORED_STDERR_FDS=
 export COLORED_STDERR_FDS
 test_program          example example_environment_empty
 test_program_subshell example example_environment_empty
+
+unset COLORED_STDERR_FDS
+
+
+# Test COLORED_STDERR_IGNORED_BINARIES.
+
+if test -x /proc/self/exe; then
+    COLORED_STDERR_IGNORED_BINARIES="$abs_builddir/example"
+    export COLORED_STDERR_IGNORED_BINARIES
+    test_program          example example_environment_empty
+    test_program_subshell example example_environment_empty
+
+    COLORED_STDERR_IGNORED_BINARIES=",some,other,path,,"
+    export COLORED_STDERR_IGNORED_BINARIES
+    test_program          example example_environment
+    test_program_subshell example example_environment
+fi
