@@ -185,10 +185,6 @@ static void init_from_environment(void) {
             goto next;
         }
 
-        if (i == count) {
-            break;
-        }
-
         /* Replace ',' to null-terminate number for atoi(). */
         *x = 0;
 
