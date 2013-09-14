@@ -402,7 +402,7 @@ inline static int tracked_fds_find(int fd) {
         return 0;
     }
 
-    if (fd < TRACKFDS_STATIC_COUNT) {
+    if (likely(fd < TRACKFDS_STATIC_COUNT)) {
         return tracked_fds[fd];
     }
 
