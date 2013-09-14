@@ -118,7 +118,7 @@ Bourne shell:
     COLORED_STDERR_POST="${esc}[0m" # default
     export COLORED_STDERR_PRE COLORED_STDERR_POST
 
-Fix `reset`; its writes to the terminal must be unaltered. `reset` is
+Fix `reset`; its writes to the terminal must be unaltered. `reset` is a
 symbolic-link to `tset` on some systems, adapt as necessary:
 
     COLORED_STDERR_IGNORED_BINARIES=/usr/bin/tset
@@ -153,7 +153,7 @@ KNOWN ISSUES
 - `{fputc,putc,putchar}_unlocked()` are not hooked with glibc when writing to
   stdout (which might be redirected to stderr). Can't be fixed as the compiler
   inlines the code into the program without calling any function.
-- Test `test_stdio.sh` fails on FreeBSD because it does handle the above
+- Test `test_stdio.sh` fails on FreeBSD because FreeBSD does handle the above
   correctly (no inlining), but the test is designed for GNU/Linux.
 - 'COLORED_STDERR_IGNORED_BINARIES' requires the `/proc` file system.
   Suggestions welcome.
