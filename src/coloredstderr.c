@@ -193,7 +193,7 @@ static void handle_fd_pre(int fd) {
 
     int saved_errno = errno;
 
-    if (unlikely(!pre_string || !post_string)) {
+    if (unlikely(!pre_string)) {
         init_pre_post_string();
     }
 
@@ -222,7 +222,7 @@ static void handle_file_pre(FILE *stream) {
 
     int saved_errno = errno;
 
-    if (unlikely(!pre_string || !post_string)) {
+    if (unlikely(!pre_string)) {
         init_pre_post_string();
     }
 
