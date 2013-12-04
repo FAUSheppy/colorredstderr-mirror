@@ -1,7 +1,9 @@
 README
 ======
 
-coloredstderr is a small library which uses 'LD_PRELOAD' to color stderr.
+coloredstderr is a small library which uses 'LD_PRELOAD' to color stderr. It
+``follows'' dups, has minimal performance overhead and can ignore certain
+binaries (requires /proc).
 
 
 Like all solutions using 'LD_PRELOAD' it only works with dynamically linked
@@ -23,7 +25,9 @@ include:
 Most other existing solutions use a second process which colors its input and
 pipe stderr to it. However this creates different runtime behaviour resulting
 in a different ordering of the output. Partial lines (no newline) also often
-cause problems.
+cause problems. coloredstderr handles these cases correctly.
+
+coloredstderr is licensed under GPL 3 (or later).
 
 
 DEPENDENCIES
