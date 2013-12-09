@@ -1,0 +1,9 @@
+README
+======
+
+The following files were copied unmodified from the autoconf archive [1]
+(2011-12-21). Thanks.
+
+[1]: http://www.gnu.org/software/autoconf-archive/
+
+- ax_c___attribute__.m4
