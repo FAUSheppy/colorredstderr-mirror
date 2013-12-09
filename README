@@ -5,12 +5,10 @@ coloredstderr is a small library which uses 'LD_PRELOAD' to color stderr. It
 ``follows'' dups, has minimal performance overhead and can ignore certain
 binaries (requires /proc).
 
-
 Like all solutions using 'LD_PRELOAD' it only works with dynamically linked
 binaries. Statically linked binaries, for example valgrind, are not supported.
 setuid binaries are also not supported ('LD_PRELOAD' disabled for security
 reasons).
-
 
 It was inspired by stderred [2]. Similar solutions (using 'LD_PRELOAD')
 include:
@@ -25,7 +23,8 @@ include:
 Most other existing solutions use a second process which colors its input and
 pipe stderr to it. However this creates different runtime behaviour resulting
 in a different ordering of the output. Partial lines (no newline) also often
-cause problems. coloredstderr handles these cases correctly.
+cause problems. coloredstderr handles these cases correctly (but has other
+possible issues, see below).
 
 coloredstderr is licensed under GPL 3 (or later).
 
@@ -100,7 +99,7 @@ The following additional environment variables are available:
   are colored.
 - 'COLORED_STDERR_IGNORED_BINARIES'
   Comma separated list of binary names/paths which should not be tracked
-  (including their children). Useful for `reset` which writes to the terminal
+  (including their children). Useful for `reset` which writes to the terminal,
   but fails to work if the output is colored. See below for an example.
 
 All environment variables starting with 'COLORED_STDERR_PRIVATE_*' are
@@ -157,12 +156,12 @@ KNOWN ISSUES
 - `{fputc,putc,putchar}_unlocked()` are not hooked with glibc when writing to
   stdout (which might be redirected to stderr). Can't be fixed as the compiler
   inlines the code into the program without calling any function.
-- Test `test_stdio.sh` fails on FreeBSD because FreeBSD does handle the above
+- Test `test_stdio.sh` fails on FreeBSD, because FreeBSD does handle the above
   correctly (no inlining), but the test is designed for GNU/Linux.
 - 'COLORED_STDERR_IGNORED_BINARIES' requires the `/proc` file system.
   Suggestions welcome.
 - Output of `strace` is not always colored correctly as the output from
-  `coloredstderr` is traced and displayed as well.
+  `coloredstderr` is traced and displayed as well. Suggestions welcome.
 
 
 BUGS
