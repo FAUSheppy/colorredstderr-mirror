@@ -371,7 +371,7 @@ static void error_vararg(int status, int errnum,
     if (error_one_per_line
             && filename != NULL && linenum != 0
             && filename == last_filename && linenum == last_linenum) {
-        return;
+        goto out;
     }
     last_filename = filename;
     last_linenum  = linenum;
@@ -404,6 +404,7 @@ static void error_vararg(int status, int errnum,
 
     fprintf(stderr, "\n");
 
+out:
     if (status != 0) {
         exit(status);
     }

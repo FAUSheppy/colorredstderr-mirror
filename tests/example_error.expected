@@ -1,10 +1,27 @@
 >STDERR>./example_error: <message>
 ./example_error:file:42: <message>
+./example_error: <message>
+<STDERR<exit code: 1
+>STDERR>./example_error:file:42: <message>
+<STDERR<exit code: 1
+>STDERR>./example_error: <message>: Cannot allocate memory
+./example_error:file:42: <message>: Cannot allocate memory
+./example_error:file:42: <message>: Cannot allocate memory
 ./example_error: <message>: Cannot allocate memory
-./example_error:file:42: <message>: Cannot allocate memory
-./example_error:file:42: <message>: Cannot allocate memory
-PROG<message>
+<STDERR<exit code: 1
+>STDERR>./example_error:file:42: <message>: Cannot allocate memory
+<STDERR<exit code: 1
+
+
+>STDERR>PROG<message>
 PROGfile:42: <message>
-PROG<message>: Cannot allocate memory
+PROG<message>
+<STDERR<exit code: 1
+exit code: 1
+>STDERR>PROG<message>: Cannot allocate memory
 PROGfile:42: <message>: Cannot allocate memory
-<STDERR<EOF
+PROG<message>: Cannot allocate memory
+<STDERR<exit code: 1
+>STDERR>PROGfile:42: <message>: Cannot allocate memory
+<STDERR<exit code: 1
+EOF

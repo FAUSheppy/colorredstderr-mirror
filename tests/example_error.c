@@ -20,12 +20,16 @@
 #include <config.h>
 
 #define _GNU_SOURCE /* for program_invocation_name */
-#include <stdio.h>
-#include <stdlib.h>
 #include <errno.h>
 #include <error.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #include "../src/compiler.h"
+#include "example.h"
 
 
 void (*error_print_progname)(void);
@@ -37,26 +41,41 @@ static void print_progname(void) {
 
 
 int main(int argc unused, char **argv unused) {
-    program_invocation_name = "./example_error";
+    pid_t pid;
+
+    char name[] = "./example_error";
+    program_invocation_name = name;
 
     error(0, 0, "<message>");
     error_at_line(0, 0, "file", 42, "<message>");
+    FORKED_TEST(pid) { error(1, 0, "<message>"); }
+    FORKED_TEST(pid) { error_at_line(1, 0, "file", 42, "<message>"); }
 
     error(0, ENOMEM, "<message>");
     error_at_line(0, ENOMEM, "file", 42, "<message>");
     error_at_line(0, ENOMEM, "file", 42, "<message>");
+    FORKED_TEST(pid) { error(1, ENOMEM, "<message>"); }
+    FORKED_TEST(pid) { error_at_line(1, ENOMEM, "file", 42, "<message>"); }
+
+    fflush(stdout);
+    printf("\n\n");
+    fflush(stdout);
 
     error_print_progname = print_progname;
     error_one_per_line = 1;
 
     error(0, 0, "<message>");
     error_at_line(0, 0, "file", 42, "<message>");
+    FORKED_TEST(pid) { error(1, 0, "<message>"); }
+    FORKED_TEST(pid) { error_at_line(1, 0, "file", 42, "<message>"); }
 
     error(0, ENOMEM, "<message>");
     error_at_line(0, ENOMEM, "file", 42, "<message>");
     error_at_line(0, ENOMEM, "file", 42, "<message>");
+    FORKED_TEST(pid) { error(1, ENOMEM, "<message>"); }
 
-    /* Exit codes are not tested. */
+    error_one_per_line = 0;
+    FORKED_TEST(pid) { error_at_line(1, ENOMEM, "file", 42, "<message>"); }
 
     return EXIT_SUCCESS;
 }
