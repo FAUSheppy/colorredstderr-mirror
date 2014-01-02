@@ -3,7 +3,7 @@ README
 
 coloredstderr is a small library which uses 'LD_PRELOAD' to color stderr. It
 ``follows'' dups, has minimal performance overhead and can ignore certain
-binaries (requires /proc).
+binaries.
 
 Like all solutions using 'LD_PRELOAD' it only works with dynamically linked
 binaries. Statically linked binaries, for example valgrind, are not supported.
@@ -101,6 +101,7 @@ The following additional environment variables are available:
   Comma separated list of binary names/paths which should not be tracked
   (including their children). Useful for `reset` which writes to the terminal,
   but fails to work if the output is colored. See below for an example.
+  Requires `/proc/self/exe`.
 
 All environment variables starting with 'COLORED_STDERR_PRIVATE_*' are
 internal variables used by the implementation and should not be set manually.
@@ -158,8 +159,8 @@ KNOWN ISSUES
   inlines the code into the program without calling any function.
 - Test `test_stdio.sh` fails on FreeBSD, because FreeBSD does handle the above
   correctly (no inlining), but the test is designed for GNU/Linux.
-- 'COLORED_STDERR_IGNORED_BINARIES' requires the `/proc` file system.
-  Suggestions welcome.
+- 'COLORED_STDERR_IGNORED_BINARIES' requires `/proc/self/exe`. Suggestions
+  welcome.
 - Output of `strace` is not always colored correctly as the output from
   `coloredstderr` is traced and displayed as well. Suggestions welcome.
 
