@@ -40,6 +40,9 @@ DEPENDENCIES
 INSTALLATION
 ------------
 
+If you're using the Git version, run `autoreconf -fsi` first to generate
+`configure`.
+
     ./configure && make && make check
 
 Then either install the library with `make install` or just copy it from
