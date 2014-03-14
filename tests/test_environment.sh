@@ -20,7 +20,7 @@ test "x$srcdir" = x && srcdir=.
 
 # Test unexpected values for COLORED_STDERR_PRIVATE_FDS environment variable.
 
-# Empty fields.
+echo 'Empty fields.'
 fds=
 test_program          example example_environment_empty
 test_program_subshell example example_environment_empty
@@ -34,7 +34,7 @@ fds=2,,,
 test_program          example example_environment
 test_program_subshell example example_environment
 
-# Invalid fds.
+echo 'Invalid fds.'
 fds=-20,-30
 test_program          example example_environment_empty
 test_program_subshell example example_environment_empty
@@ -45,8 +45,8 @@ fds=-20,-30,2,-1,
 test_program          example example_environment
 test_program_subshell example example_environment
 
-# Test COLORED_STDERR_FDS overwrites COLORED_STDERR_PRIVATE_FDS. Additional
-# tests in example_exec.
+echo 'Test COLORED_STDERR_FDS overwrites COLORED_STDERR_PRIVATE_FDS.'
+# Additional tests in example_exec.
 
 fds=
 COLORED_STDERR_FDS=2,
@@ -63,7 +63,7 @@ test_program_subshell example example_environment_empty
 unset COLORED_STDERR_FDS
 
 
-# Test COLORED_STDERR_IGNORED_BINARIES.
+echo 'Test COLORED_STDERR_IGNORED_BINARIES.'
 
 if test -x /proc/self/exe; then
     COLORED_STDERR_IGNORED_BINARIES="$abs_builddir/example"
