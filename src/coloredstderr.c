@@ -30,6 +30,10 @@
 # define NDEBUG
 #endif
 
+#ifndef TLS
+# define TLS
+#endif
+
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -85,8 +89,8 @@ static int used_fds_set_by_user;
  * If so don't print the pre/post string for the recursive calls. This is
  * necessary on some systems (e.g. FreeBSD 9.1) which call multiple hooked
  * functions while printing a string (e.g. a FILE * and a fd hook function is
- * called). */
-static int handle_recursive;
+ * called). This is not thread-safe if TLS is not available. */
+static TLS int handle_recursive;
 
 
 #include "constants.h"

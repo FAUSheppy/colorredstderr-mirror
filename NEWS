@@ -7,6 +7,8 @@ NEWS
 - Fix hook for GNU's error_at_line() not exiting if status != 0. If
   error_one_per_line was used and suppressed a message, then error_at_line()
   didn't exit.
+- Fix race condition when using threads. The fix requires thread-local
+  storage.
 
 
 0.1
