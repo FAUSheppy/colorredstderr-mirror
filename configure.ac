@@ -92,3 +92,8 @@ AM_CONDITIONAL([HAVE_VFORK],[test "x$ac_cv_func_vfork_works" = xyes])
 
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 AC_OUTPUT
+
+if test x"$ac_cv_tls" != x"none"; then
+    AC_MSG_WARN([thread-local storage not supported by compiler, \
+possible race condition in threaded programs])
+fi
