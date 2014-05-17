@@ -88,6 +88,27 @@ A default setup could look like this:
     COLORED_STDERR_FDS=2,
     export LD_PRELOAD COLORED_STDERR_FDS
 
+To use coloredstderr with multi-lib (multiple architectures on the same
+system, e.g. i386 and amd64), your system must support the '$LIB' variable in
+'LD_PRELOAD'. Then you can build coloredstderr for all architectures and use
+'$LIB' in 'LD_PRELOAD'. The following should work for Debian-based systems
+with this directory structure:
+
+    dir
+    `-- lib
+        |-- i386-linux-gnu
+        |   `-- libcoloredstderr.so
+        `-- x86_64-linux-gnu
+            `-- libcoloredstderr.so
+
+Now set 'LD_PRELOAD'. `lib/` is included in '$LIB'!
+
+    LD_PRELOAD='/absolute/path/to/dir/$LIB/libcoloredstderr.so'
+
+The single quotes are important. '$LIB' is not evaluated by the shell, but by
+the loader (`man ld.so`). Now both i386 and amd64 binaries automatically use
+coloredstderr.
+
 
 The following additional environment variables are available:
 
