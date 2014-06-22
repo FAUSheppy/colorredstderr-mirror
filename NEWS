@@ -1,7 +1,7 @@
 NEWS
 ====
 
-0.X
+0.2
 ---
 
 - Fix hook for GNU's error_at_line() not exiting if status != 0. If
@@ -9,6 +9,7 @@ NEWS
   didn't exit.
 - Fix race condition when using threads. The fix requires thread-local
   storage.
+- Documentation updates.
 
 
 0.1
