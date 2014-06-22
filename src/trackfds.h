@@ -99,12 +99,14 @@ static int init_tracked_fds_list(size_t count) {
     return 1;
 }
 
-/* Load tracked file descriptors from the environment. The environment is used
+/*
+ * Load tracked file descriptors from the environment. The environment is used
  * to pass the information to child processes.
  *
  * ENV_NAME_FDS and ENV_NAME_PRIVATE_FDS have the following format: Each
  * descriptor as string followed by a comma; there's a trailing comma.
- * Example: "2,4,". */
+ * Example: "2,4,".
+ */
 static void init_from_environment(void) {
 #ifdef DEBUG
     debug("init_from_environment()\t\t[%d]\n", getpid());

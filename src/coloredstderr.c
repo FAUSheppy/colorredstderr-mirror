@@ -326,7 +326,7 @@ HOOK_FILE2(int, __overflow, f, _IO_FILE *, f, int, ch)
 /* Same for FreeBSD's libc. However it's more aggressive: The inline writing
  * and __swbuf() are also used for normal output (e.g. putc()). Writing to
  * stderr is still fine; it always calls __swbuf() as stderr is always
- * unbufferd. */
+ * unbuffered. */
 #ifdef HAVE___SWBUF
 HOOK_FILE2(int, __swbuf, f, int, c, FILE *, f)
 #endif
