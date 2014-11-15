@@ -534,11 +534,12 @@ pid_t vfork(void) {
      * isn't allowed to perform any memory-modifications before the exec()
      * (except the pid_t result variable of vfork()).
      *
-     * As some programs don't adhere to the standard (e.g. the "child" closes
-     * or dups a descriptor before the exec()) and this breaks our tracking of
-     * file descriptors (e.g. it gets closed in the parent as well), we just
-     * fork() instead. This is in compliance with the POSIX standard and as
-     * most systems use copy-on-write anyway not a performance issue. */
+     * As we have to store changes to the file descriptors in memory (e.g. the
+     * "child" closes or dups a descriptor before the exec()) and this
+     * modifies the parent as well due to the semantics of vfork() - thus
+     * breaking the requirements of vfork(), we just use fork instead(). This
+     * is in compliance with the POSIX standard and as most systems use
+     * copy-on-write anyway not a performance issue. */
     return fork();
 }
 #endif
