@@ -1,4 +1,4 @@
-dnl Copyright (C) 2013-2014  Simon Ruderich
+dnl Copyright (C) 2013-2015  Simon Ruderich
 dnl
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by

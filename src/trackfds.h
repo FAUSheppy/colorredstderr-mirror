@@ -1,7 +1,7 @@
 /*
  * Utility functions to track file descriptors.
  *
- * Copyright (C) 2013-2014  Simon Ruderich
+ * Copyright (C) 2013-2015  Simon Ruderich
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
