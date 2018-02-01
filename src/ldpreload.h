@@ -2,7 +2,7 @@
  * Helper header for LD_PRELOAD related headers macros. Must be loaded _first_
  * (for RTLD_NEXT)!
  *
- * Copyright (C) 2012-2015  Simon Ruderich
+ * Copyright (C) 2012-2018  Simon Ruderich
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

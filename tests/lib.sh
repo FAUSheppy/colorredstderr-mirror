@@ -1,6 +1,6 @@
 # Library for the test suite.
 
-# Copyright (C) 2013-2015  Simon Ruderich
+# Copyright (C) 2013-2018  Simon Ruderich
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
