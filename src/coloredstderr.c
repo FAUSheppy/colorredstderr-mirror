@@ -554,6 +554,11 @@ pid_t vfork(void) {
 HOOK_FUNC_DEF3(int, execve, char const *, filename, char * const *, argv, char * const *, env) {
     DLSYM_FUNCTION(real_execve, "execve");
 
+    char * const fake_env[] = {NULL};
+    if (env == NULL) {
+        env = fake_env;
+    }
+
     /* Count environment variables. */
     size_t count = 0;
     char * const *x = env;
